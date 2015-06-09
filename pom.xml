@@ -130,9 +130,7 @@
                         <exclude>nbactions.xml</exclude>
                         <exclude>profiles.xml</exclude>
                         <exclude>catalog.xml</exclude>
-                        <exclude>**/*.svg</exclude>
-                        <exclude>**/testdata/UTF8WithPreamble.txt</exclude>
-                        <exclude>**/testdata/UTF8WithoutPreamble.txt</exclude>
+                        <exclude>.travis.yml</exclude>
                         <exclude>.git</exclude>
                         <exclude>README.md</exclude>
                     </excludes>
