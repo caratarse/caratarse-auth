@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 public class Main {
 
-    private static final String SERVICE_NAME = "caratarseAuth";
+    private static final String SERVICE_NAME = "caratarse-auth";
     private static final Logger LOG = LoggerFactory.getLogger(SERVICE_NAME);
     private static boolean first = true;
     private static int counter = 0;
