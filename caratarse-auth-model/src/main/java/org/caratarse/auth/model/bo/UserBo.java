@@ -64,7 +64,10 @@ public class UserBo {
 
     @Transactional
     public User getUser(String uuid) {
-        return userDao.findByUuid(uuid);
+        ((HibernateGenericDao)userDao).setFilterNames("limitByNotDeleted");
+        final User user = userDao.findByUuid(uuid);
+        ((HibernateGenericDao)userDao).setFilterNames();
+        return user;
     }
     
     @Transactional
@@ -92,6 +95,12 @@ public class UserBo {
         authorizationDao.create(authorizationPrinter);
         userMichele.addAuthorization(authorizationUser, Permissions.R);
         return userDao.findAll();
+    }
+
+    @Transactional
+    public void deleteUser(String uuid) {
+        User user = userDao.findByUuid(uuid);
+        user.delete();
     }
     
 }

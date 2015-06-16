@@ -24,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
@@ -89,4 +90,24 @@ public class UserControllerTest {
         assertEquals(200, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
+    
+    @Test
+    public void deleteUser() throws IOException {
+        HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c");
+        HttpResponse response = httpClient.execute(deleteRequest);
+        assertEquals(204, response.getStatusLine().getStatusCode());
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c.json");
+        response = httpClient.execute(getRequest);
+        assertEquals(404, response.getStatusLine().getStatusCode());
+        log.debug(IOUtils.toString(response.getEntity().getContent()));
+    }
+    
+    @Test
+    public void deleteNotExistentUser() throws IOException {
+        HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/users/a-not-existent-user");
+        HttpResponse response = httpClient.execute(deleteRequest);
+        assertEquals(500, response.getStatusLine().getStatusCode());
+        log.debug(IOUtils.toString(response.getEntity().getContent()));
+    }
+    
 }

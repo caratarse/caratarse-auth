@@ -19,6 +19,7 @@ package org.caratarse.auth.model.bo;
 
 import java.util.List;
 import javax.annotation.Resource;
+import org.caratarse.auth.model.po.User;
 import org.caratarse.auth.model.po.UserAuthorization;
 import org.caratarse.auth.model.test.BaseTest;
 import org.junit.Test;
@@ -45,6 +46,13 @@ public class UserBoTest extends BaseTest {
         List<UserAuthorization> result
                 = userBo.retrieveUserDirectAuthorizations(uuid, serviceName);
         assertSize(2, result);
+    }
+    
+    @Test
+    public void retrieveDeletedUser() {
+        String uuid = "32345678-1234-1234-1234-123456781234";
+        User user = userBo.getUser(uuid);
+        assertNull(user);
     }
     
 }

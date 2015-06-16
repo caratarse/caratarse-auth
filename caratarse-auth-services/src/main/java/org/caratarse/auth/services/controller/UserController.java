@@ -22,6 +22,7 @@ import com.strategicgains.hyperexpress.HyperExpress;
 import com.strategicgains.hyperexpress.builder.TokenBinder;
 import com.strategicgains.hyperexpress.builder.TokenResolver;
 import static com.strategicgains.repoexpress.adapter.Identifiers.UUID;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.List;
 import javax.annotation.Resource;
 import org.caratarse.auth.model.bo.UserBo;
@@ -54,6 +55,9 @@ public class UserController {
     public User read(Request request, Response response) {
         String uuid = request.getHeader(Constants.Url.USER_UUID, "No User UUID supplied");
         User user = userBo.getUser(uuid);
+        if (user == null) {
+            response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
+        }
 
         addTokenBinder();
 
@@ -90,7 +94,8 @@ public class UserController {
     }
 
     public void delete(Request request, Response response) {
-        //TODO: Your 'DELETE' logic here...
+        String uuid = request.getHeader(Constants.Url.USER_UUID, "No User UUID supplied");
+        userBo.deleteUser(uuid);
         response.setResponseNoContent();
     }
 }
