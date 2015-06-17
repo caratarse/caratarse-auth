@@ -133,6 +133,8 @@
                         <exclude>.travis.yml</exclude>
                         <exclude>.git</exclude>
                         <exclude>README.md</exclude>
+                        <exclude>.idea/**</exclude>
+                        <exclude>**/*.iml</exclude>
                     </excludes>
                     <properties>
                         <name>${project.name}</name>
