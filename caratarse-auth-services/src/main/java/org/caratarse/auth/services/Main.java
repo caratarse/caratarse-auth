@@ -20,8 +20,10 @@ package org.caratarse.auth.services;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.strategicgains.hyperexpress.domain.hal.HalResourceFactory;
 import com.strategicgains.hyperexpress.domain.siren.SirenResourceFactory;
+import com.strategicgains.restexpress.plugin.cache.CacheControlPlugin;
 import com.strategicgains.restexpress.plugin.cors.CorsHeaderPlugin;
 import com.strategicgains.restexpress.plugin.route.RoutesMetadataPlugin;
+import com.strategicgains.restexpress.plugin.swagger.SwaggerPlugin;
 import static io.netty.handler.codec.http.HttpHeaders.Names.ACCEPT;
 import static io.netty.handler.codec.http.HttpHeaders.Names.AUTHORIZATION;
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
@@ -37,6 +39,7 @@ import org.caratarse.auth.services.config.Configuration;
 import org.caratarse.auth.services.plugins.transactions.OpenTransactionPlugin;
 import org.caratarse.auth.services.serialization.SerializationProvider;
 import org.restexpress.ContentType;
+import org.restexpress.Flags;
 import static org.restexpress.Flags.Auth.PUBLIC_ROUTE;
 import org.restexpress.plugin.hyperexpress.HyperExpressPlugin;
 import org.restexpress.util.Environment;
@@ -69,8 +72,16 @@ public class Main {
         
         
         new RoutesMetadataPlugin()
-                .flag("public-route") // optional. Set a flag on the request for this route.
+                .flag(PUBLIC_ROUTE) // optional. Set a flag on the request for this route.
                 .register(server);
+        
+        new SwaggerPlugin()
+                .flag(Flags.Auth.PUBLIC_ROUTE)
+                .register(server);
+
+        new CacheControlPlugin() // Support caching headers.
+                .register(server);
+        
         final HyperExpressPlugin hyperExpressPlugin = new HyperExpressPlugin(Linkable.class);
         if (first) {
             HalResourceFactory hal = new HalResourceFactory();
