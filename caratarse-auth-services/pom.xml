@@ -56,6 +56,11 @@
             <version>2.3</version>
         </dependency>
         <dependency>
+            <groupId>com.strategicgains.plugin-express</groupId>
+            <artifactId>CORSPlugin</artifactId>
+            <version>0.3.0</version>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>

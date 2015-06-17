@@ -18,16 +18,18 @@
 package org.caratarse.auth.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.strategicgains.hyperexpress.HyperExpress;
-import com.strategicgains.hyperexpress.builder.TokenBinder;
-import com.strategicgains.hyperexpress.builder.TokenResolver;
 import com.strategicgains.hyperexpress.domain.hal.HalResourceFactory;
 import com.strategicgains.hyperexpress.domain.siren.SirenResourceFactory;
+import com.strategicgains.restexpress.plugin.cors.CorsHeaderPlugin;
 import com.strategicgains.restexpress.plugin.route.RoutesMetadataPlugin;
+import static io.netty.handler.codec.http.HttpHeaders.Names.ACCEPT;
+import static io.netty.handler.codec.http.HttpHeaders.Names.AUTHORIZATION;
+import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
+import static io.netty.handler.codec.http.HttpHeaders.Names.LOCATION;
+import static io.netty.handler.codec.http.HttpHeaders.Names.REFERER;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.caratarse.auth.model.po.Linkable;
-import org.caratarse.auth.model.po.User;
 
 import org.restexpress.RestExpress;
 import org.restexpress.pipeline.SimpleConsoleLogMessageObserver;
@@ -35,6 +37,7 @@ import org.caratarse.auth.services.config.Configuration;
 import org.caratarse.auth.services.plugins.transactions.OpenTransactionPlugin;
 import org.caratarse.auth.services.serialization.SerializationProvider;
 import org.restexpress.ContentType;
+import static org.restexpress.Flags.Auth.PUBLIC_ROUTE;
 import org.restexpress.plugin.hyperexpress.HyperExpressPlugin;
 import org.restexpress.util.Environment;
 import org.slf4j.Logger;
@@ -84,6 +87,13 @@ public class Main {
             hyperExpressPlugin.addResourceFactory(hal, ContentType.JSON+counter);
         }
         hyperExpressPlugin.register(server);
+        
+        new CorsHeaderPlugin("*")
+                .flag(PUBLIC_ROUTE)
+                .allowHeaders(CONTENT_TYPE, ACCEPT, AUTHORIZATION, REFERER, LOCATION)
+                .exposeHeaders(LOCATION)
+                .register(server);
+        
         final OpenTransactionPlugin openTransactionPlugin = new OpenTransactionPlugin();
         config.getContextHolder().autowireBeanProperties(openTransactionPlugin);
         openTransactionPlugin.register(server);
