@@ -90,6 +90,22 @@ public class UserControllerTest {
         assertEquals(200, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
+
+    @Test
+    public void getUserByUsername() throws IOException {
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users?filter=username:=:lucio");
+        final HttpResponse response = httpClient.execute(getRequest);
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        log.debug(IOUtils.toString(response.getEntity().getContent()));
+    }
+
+    @Test
+    public void getUsersPaginated() throws IOException {
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users?limit=1");
+        final HttpResponse response = httpClient.execute(getRequest);
+        assertEquals(206, response.getStatusLine().getStatusCode());
+        log.debug(IOUtils.toString(response.getEntity().getContent()));
+    }
     
     @Test
     public void deleteUser() throws IOException {

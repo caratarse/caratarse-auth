@@ -27,6 +27,9 @@ import org.caratarse.auth.model.po.Authorization;
 import org.caratarse.auth.model.po.Permissions;
 import org.caratarse.auth.model.po.User;
 import org.caratarse.auth.model.po.UserAuthorization;
+import org.caratarse.auth.model.util.CriteriaFilterHelper;
+import org.hibernate.criterion.DetachedCriteria;
+import org.lambico.dao.generic.Page;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import org.restexpress.common.query.QueryFilter;
 import org.restexpress.common.query.QueryOrder;
@@ -58,8 +61,17 @@ public class UserBo {
     }
     
     @Transactional
-    public List<User> readAll(QueryFilter filter, QueryRange range, QueryOrder order) {
-        return userDao.findAll();
+    public Page<User> readAll(QueryFilter filter, QueryRange range, QueryOrder order) {
+        Page<User> result = null;
+        DetachedCriteria crit = DetachedCriteria.forClass(User.class);
+        CriteriaFilterHelper.addQueryFilter(crit, filter);
+        CriteriaFilterHelper.addQueryOrder(crit, order);
+        if (range != null && range.isInitialized()) {
+            result = ((HibernateGenericDao)userDao).searchPaginatedByCriteria(crit, (int) range.getOffset(), range.getLimit());
+        } else {
+            result = ((HibernateGenericDao)userDao).searchPaginatedByCriteria(crit, 0, 0);
+        }
+        return result;
     }
 
     @Transactional

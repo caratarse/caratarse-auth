@@ -28,6 +28,7 @@ import javax.annotation.Resource;
 import org.caratarse.auth.model.bo.UserBo;
 import org.caratarse.auth.model.po.User;
 import org.caratarse.auth.services.Constants;
+import org.lambico.dao.generic.Page;
 
 import org.restexpress.Request;
 import org.restexpress.Response;
@@ -69,12 +70,12 @@ public class UserController {
         QueryFilter filter = QueryFilters.parseFrom(request);
         QueryOrder order = QueryOrders.parseFrom(request);
         QueryRange range = QueryRanges.parseFrom(request, 20);
-        List<User> entities = userBo.readAll(filter, range, order);
-        response.setCollectionResponse(range, entities.size(), entities.size());
+        Page<User> entities = userBo.readAll(filter, range, order);
+        response.setCollectionResponse(range, entities.getList().size(), entities.getRowCount());
 
         addTokenBinder();
 
-        return entities;
+        return entities.getList();
     }
 
     private void addTokenBinder() {
