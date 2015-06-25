@@ -21,7 +21,6 @@ package org.caratarse.auth.services.controller;
 import com.strategicgains.hyperexpress.HyperExpress;
 import com.strategicgains.hyperexpress.builder.TokenBinder;
 import com.strategicgains.hyperexpress.builder.TokenResolver;
-import static com.strategicgains.repoexpress.adapter.Identifiers.UUID;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.List;
 import javax.annotation.Resource;
@@ -73,7 +72,7 @@ public class UserController {
         Page<User> entities = userBo.readAll(filter, range, order);
         response.setCollectionResponse(range, entities.getList().size(), entities.getRowCount());
 
-        addTokenBinder();
+        addTokenBinder(range, entities.getRowCount(), filter);
 
         return entities.getList();
     }
@@ -89,6 +88,30 @@ public class UserController {
         });
     }
 
+    private void addTokenBinder(final QueryRange range, final long rows, final QueryFilter filter) {
+        // Bind the resources in the collection with link URL tokens, etc. here...
+        HyperExpress.tokenBinder(new TokenBinder<User>() {
+            @Override
+            public void bind(User entity, TokenResolver resolver) {
+                resolver.bind(Constants.Url.USER_UUID, entity.getUuid())
+                        .bind(Constants.Url.USER_ID, entity.getId().toString());
+                if (range.hasLimit()) {
+                    if (range.getOffset()+range.getLimit() <= rows) {
+                        resolver.bind("nextOffset", Long.toString(range.getOffset()+range.getLimit()));
+                    }
+                    if (range.getOffset()-range.getLimit() >= 0) {
+                        resolver.bind("prevOffset", Long.toString(range.getOffset()-range.getLimit()));
+                    }
+                    resolver.bind("offset", Long.toString(range.getOffset()+range.getLimit()));
+                    resolver.bind("limit", Integer.toString(range.getLimit()));
+                }
+                if (filter != null) {
+                    resolver.bind("filter", filter.toString());
+                }
+            }
+        });
+    }
+    
     public void update(Request request, Response response) {
         //TODO: Your 'PUT' logic here...
         response.setResponseNoContent();

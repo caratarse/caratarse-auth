@@ -86,8 +86,8 @@ public class Main {
         if (first) {
             HalResourceFactory hal = new HalResourceFactory();
             hal.excludeAnnotations(JsonIgnore.class);
-            hyperExpressPlugin.addResourceFactory(hal, ContentType.JSON);
             hyperExpressPlugin.addResourceFactory(hal, ContentType.HAL_JSON);
+            hyperExpressPlugin.addResourceFactory(hal, ContentType.JSON);
 
             SirenResourceFactory siren = new SirenResourceFactory();
             siren.excludeAnnotations(JsonIgnore.class);

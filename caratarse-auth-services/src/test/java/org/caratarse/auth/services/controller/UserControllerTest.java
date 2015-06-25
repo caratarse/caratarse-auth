@@ -101,7 +101,7 @@ public class UserControllerTest {
 
     @Test
     public void getUsersPaginated() throws IOException {
-        HttpGet getRequest = new HttpGet(BASE_URL + "/users?limit=1");
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users?offset=0&limit=1");
         final HttpResponse response = httpClient.execute(getRequest);
         assertEquals(206, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
