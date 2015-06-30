@@ -20,12 +20,15 @@ package org.caratarse.auth.services.controller;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import org.apache.commons.io.IOUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -125,5 +128,15 @@ public class UserControllerTest {
         assertEquals(500, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
-    
+ 
+    @Test
+    public void createUser() throws UnsupportedEncodingException, IOException {
+        HttpPost postRequest = new HttpPost(BASE_URL + "/users");
+        StringEntity input = new StringEntity("{\"username\":\"carlo\",\"password\":\"carloPwd\"}");
+        input.setContentType("application/json");
+	postRequest.setEntity(input);
+        HttpResponse response = httpClient.execute(postRequest);
+        assertEquals(201, response.getStatusLine().getStatusCode());
+        log.debug(IOUtils.toString(response.getEntity().getContent()));
+    }
 }

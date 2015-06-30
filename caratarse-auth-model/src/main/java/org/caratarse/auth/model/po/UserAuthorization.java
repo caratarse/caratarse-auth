@@ -39,7 +39,7 @@ import org.hibernate.annotations.Filters;
 @Entity
 public class UserAuthorization extends EntityBase {
 
-    @JsonBackReference
+    @JsonBackReference(value = "user-authorization")
     private User user;
     @JsonBackReference
     private Authorization authorization;

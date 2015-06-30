@@ -17,10 +17,12 @@
  */
 package org.caratarse.auth.services.controller;
 
-
 import com.strategicgains.hyperexpress.HyperExpress;
 import com.strategicgains.hyperexpress.builder.TokenBinder;
 import com.strategicgains.hyperexpress.builder.TokenResolver;
+import com.strategicgains.hyperexpress.builder.UrlBuilder;
+import com.strategicgains.syntaxe.ValidationEngine;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.List;
 import javax.annotation.Resource;
@@ -41,15 +43,30 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class UserController {
 
+    private static final UrlBuilder LOCATION_BUILDER = new UrlBuilder();
     @Resource
     private UserBo userBo;
 
     public UserController() {
     }
 
-    public Object create(Request request, Response response) {
-        //TODO: Your 'POST' logic here...
-        return null;
+    public User create(Request request, Response response) {
+        User user = request.getBodyAs(User.class, "User details not provided");
+        ValidationEngine.validateAndThrow(user);
+        userBo.store(user);
+
+        // Construct the response for create...
+        response.setResponseCreated();
+
+        TokenResolver resolver = HyperExpress.bind(Constants.Url.USER_UUID, user.getUuid());
+//        addTokenBinder();
+
+        // Include the Location header...
+        String locationPattern = request.getNamedUrl(HttpMethod.GET, Constants.Routes.USER_READ_ROUTE);
+        response.addLocationHeader(LOCATION_BUILDER.build(locationPattern, resolver));
+
+        // Return the newly-created item...
+        return user;
     }
 
     public User read(Request request, Response response) {
@@ -96,13 +113,15 @@ public class UserController {
                 resolver.bind(Constants.Url.USER_UUID, entity.getUuid())
                         .bind(Constants.Url.USER_ID, entity.getId().toString());
                 if (range.hasLimit()) {
-                    if (range.getOffset()+range.getLimit() <= rows) {
-                        resolver.bind("nextOffset", Long.toString(range.getOffset()+range.getLimit()));
+                    if (range.getOffset() + range.getLimit() <= rows) {
+                        resolver.bind("nextOffset", Long.toString(range.getOffset() + range.
+                                getLimit()));
                     }
-                    if (range.getOffset()-range.getLimit() >= 0) {
-                        resolver.bind("prevOffset", Long.toString(range.getOffset()-range.getLimit()));
+                    if (range.getOffset() - range.getLimit() >= 0) {
+                        resolver.bind("prevOffset", Long.toString(range.getOffset() - range.
+                                getLimit()));
                     }
-                    resolver.bind("offset", Long.toString(range.getOffset()+range.getLimit()));
+                    resolver.bind("offset", Long.toString(range.getOffset() + range.getLimit()));
                     resolver.bind("limit", Integer.toString(range.getLimit()));
                 }
                 if (filter != null) {
@@ -111,7 +130,7 @@ public class UserController {
             }
         });
     }
-    
+
     public void update(Request request, Response response) {
         //TODO: Your 'PUT' logic here...
         response.setResponseNoContent();

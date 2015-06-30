@@ -60,12 +60,13 @@ public class User extends EntityBase implements UuidIdentified {
     private Date creationDate;
     private Date updatedDate;
     private Date disabled;
-    @JsonManagedReference
+    @JsonManagedReference(value = "user-service")
     private List<UserService> userServices;
-    @JsonManagedReference
+    @JsonManagedReference(value = "user-authorization")
     private List<UserAuthorization> userAuthorizations;
 
     public User() {
+        this.uuid = UUID.randomUUID().toString();
     }
 
     public User(String username, String password) {

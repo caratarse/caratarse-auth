@@ -114,5 +114,10 @@ public class UserBo {
         User user = userDao.findByUuid(uuid);
         user.delete();
     }
+
+    @Transactional
+    public void store(User user) {
+        userDao.store(user);
+    }
     
 }

@@ -40,7 +40,7 @@ import org.hibernate.annotations.Filters;
 @Entity
 public class UserService extends EntityBase {
     
-    @JsonBackReference
+    @JsonBackReference(value = "user-service")
     private User user;
     @JsonBackReference
     private Service service;
