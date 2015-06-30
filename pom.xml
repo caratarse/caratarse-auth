@@ -259,13 +259,13 @@
         </site>
     </distributionManagement>
     <scm>
-        <connection>scm:git:https://github.com/benfante/caratarse-auth.git</connection>
-        <developerConnection>scm:git:https://github.com/benfante/caratarse-auth.git</developerConnection>
-        <url>https://github.com/benfante/caratarse-auth</url>
+        <connection>scm:git:https://github.com/caratarse/caratarse-auth.git</connection>
+        <developerConnection>scm:git:https://github.com/caratarse/caratarse-auth.git</developerConnection>
+        <url>https://github.com/caratarse/caratarse-auth</url>
     </scm>
     <issueManagement>
         <system>GithHub Issues</system>
-        <url>https://github.com/benfante/caratarse-auth/issues</url>
+        <url>https://github.com/caratarse/caratarse-auth/issues</url>
     </issueManagement>
     <licenses>
         <license>
@@ -277,7 +277,7 @@
     </licenses>
     <organization>
         <name>Caratarse Auth Team</name>
-        <url>https://github.com/benfante/caratarse-auth/graphs/contributors</url>
+        <url>https://github.com/caratarse/caratarse-auth/graphs/contributors</url>
     </organization>
     <developers>
         <developer>
