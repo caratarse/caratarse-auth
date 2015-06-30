@@ -28,6 +28,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
@@ -137,6 +138,20 @@ public class UserControllerTest {
 	postRequest.setEntity(input);
         HttpResponse response = httpClient.execute(postRequest);
         assertEquals(201, response.getStatusLine().getStatusCode());
+        log.debug(IOUtils.toString(response.getEntity().getContent()));
+    }
+    
+    @Test
+    public void updateUser() throws IOException {
+        HttpPut putRequest = new HttpPut(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c");
+        StringEntity input = new StringEntity("{\"username\":\"updUsername\",\"password\":\"updPwd\"}");
+        input.setContentType("application/json");
+	putRequest.setEntity(input);
+        HttpResponse response = httpClient.execute(putRequest);
+        assertEquals(204, response.getStatusLine().getStatusCode());
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c.json");
+        response = httpClient.execute(getRequest);
+        assertEquals(200, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
 }

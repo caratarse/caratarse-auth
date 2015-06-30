@@ -21,6 +21,7 @@ import com.strategicgains.hyperexpress.HyperExpress;
 import com.strategicgains.hyperexpress.builder.TokenBinder;
 import com.strategicgains.hyperexpress.builder.TokenResolver;
 import com.strategicgains.hyperexpress.builder.UrlBuilder;
+import static com.strategicgains.repoexpress.adapter.Identifiers.UUID;
 import com.strategicgains.syntaxe.ValidationEngine;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -81,7 +82,6 @@ public class UserController {
         return user;
     }
 
-    @Transactional
     public List<User> readAll(Request request, Response response) {
         QueryFilter filter = QueryFilters.parseFrom(request);
         QueryOrder order = QueryOrders.parseFrom(request);
@@ -132,7 +132,16 @@ public class UserController {
     }
 
     public void update(Request request, Response response) {
-        //TODO: Your 'PUT' logic here...
+        String uuid = request.getHeader(Constants.Url.USER_UUID, "No User UUID supplied");
+        User dbUser = userBo.getUser(uuid);
+        if (dbUser == null) {
+            response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
+            return;
+        }
+        User user = request.getBodyAs(User.class, "User details not provided");
+        dbUser.copy(user);
+        ValidationEngine.validateAndThrow(dbUser);
+        userBo.store(dbUser);
         response.setResponseNoContent();
     }
 

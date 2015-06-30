@@ -17,7 +17,6 @@
  */
 package org.caratarse.auth.model.po;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.Date;
 import java.util.LinkedList;
@@ -34,11 +33,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
+import org.caratarse.auth.model.util.BeanUtils;
 import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.FilterDefs;
 import org.hibernate.annotations.Filters;
-import org.hibernate.annotations.ParamDef;
 
 /**
  * The user.
@@ -243,5 +240,16 @@ public class User extends EntityBase implements UuidIdentified {
             this.getUserServices().add(userService);
             service.getUserServices().add(userService);
         }
+    }
+
+    /**
+     * Copy the allowed not-null properties from another user bean.
+     * 
+     * Don't copy IDs and related entities.
+     * 
+     * @param user The source bean.
+     */
+    public void copy(User user) {
+        BeanUtils.copyNotNullProperties(user, this, "id", "uuid", "deleted", "userAuthorizations", "userServices");
     }
 }
