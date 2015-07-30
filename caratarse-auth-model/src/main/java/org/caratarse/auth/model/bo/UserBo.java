@@ -118,7 +118,11 @@ public class UserBo {
         Authorization authorizationPrinter
                 = new Authorization("ROLE_PRINTER", "Printer authorization", serviceTest);
         authorizationDao.create(authorizationPrinter);
-        userMichele.addAuthorization(authorizationUser, Permissions.R);
+        userMichele.addAuthorization(authorizationPrinter, Permissions.R);
+        userLucio.addAuthorization(authorizationPrinter, Permissions.RWX);
+        Authorization authorizationNotUsed
+                = new Authorization("ROLE_NOT_USED", "Not used authorization", serviceTest);
+        authorizationDao.create(authorizationNotUsed);
         return userDao.findAll();
     }
 

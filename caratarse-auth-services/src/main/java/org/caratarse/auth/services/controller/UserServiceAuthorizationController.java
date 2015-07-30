@@ -106,6 +106,9 @@ public class UserServiceAuthorizationController {
                 "No Authorization Name supplied");
         UserAuthorization userAuthorization = userAuthorizationBo.findUserAuthorization(userUuid,
                 serviceName, authorizationName);
+        if (userAuthorization == null) {
+            response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
+        }
 
         addTokenBinder();
 

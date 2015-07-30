@@ -71,11 +71,12 @@ public class UserAuthorizationBo {
     @Transactional
     public Page<UserAuthorization> readAllByUserAndService(String userUuid, String serviceName, QueryFilter filter, QueryRange range, QueryOrder order) {
         Page<UserAuthorization> result = null;
-        DetachedCriteria crit = DetachedCriteria.forClass(UserAuthorization.class);
-        crit.createAlias("user", "user");
+        DetachedCriteria crit = DetachedCriteria.forClass(UserAuthorization.class, "ua");
+        crit.createAlias("ua.user", "user");
         crit.add(Restrictions.eq("user.uuid", userUuid));
-        crit.createAlias("user.authorization", "authorization");
-        crit.add(Restrictions.eq("authorization.service.name", serviceName));
+        crit.createAlias("ua.authorization", "authorization");
+        crit.createAlias("authorization.service", "service");
+        crit.add(Restrictions.eq("service.name", serviceName));
         
         CriteriaFilterHelper.addQueryFilter(crit, filter);
         CriteriaFilterHelper.addQueryOrder(crit, order);

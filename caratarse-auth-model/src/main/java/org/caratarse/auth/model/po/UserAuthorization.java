@@ -99,7 +99,7 @@ public class UserAuthorization extends EntityBase {
      * @param userAuthorization  The source bean.
      */
     public void copy(UserAuthorization userAuthorization) {
-        BeanUtils.copyNotNullProperties(user, this, "id", "user", "authorization", "deleted");
+        BeanUtils.copyNotNullProperties(userAuthorization, this, "id", "user", "authorization", "deleted");
     }
     
 }
