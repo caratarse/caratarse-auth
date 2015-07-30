@@ -42,7 +42,7 @@ import org.caratarse.auth.services.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserControllerTest {
+public class UserServiceControllerTest {
 
     /**
      * The REST server that handles the test calls.
@@ -50,7 +50,7 @@ public class UserControllerTest {
     private static RestExpress server;
     private HttpClient httpClient;
     private static final String BASE_URL = "http://localhost:8081";
-    final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
+    final Logger log = LoggerFactory.getLogger(UserServiceControllerTest.class);
 
 
     @BeforeClass
@@ -66,11 +66,12 @@ public class UserControllerTest {
         Thread.sleep(5000L);
     }
 
+
     @Before
     public void beforeEach() throws IOException {
         httpClient = new DefaultHttpClient();
         HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/populates.json");
-        HttpResponse response = httpClient.execute(deleteRequest);        
+        HttpResponse response = httpClient.execute(deleteRequest);
         assertEquals(204, response.getStatusLine().getStatusCode());
         EntityUtils.consumeQuietly(response.getEntity());
         HttpGet getRequest = new HttpGet(BASE_URL + "/populates.json");
@@ -93,70 +94,54 @@ public class UserControllerTest {
     }
     
     @Test
-    public void getUser() throws IOException {
-        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c.json");
+    public void getUserServices() throws IOException {
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services.json");
         final HttpResponse response = httpClient.execute(getRequest);
         assertEquals(200, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
 
-    @Test
-    public void getUserByUsername() throws IOException {
-        HttpGet getRequest = new HttpGet(BASE_URL + "/users?filter=username:=:lucio");
-        final HttpResponse response = httpClient.execute(getRequest);
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        log.debug(IOUtils.toString(response.getEntity().getContent()));
-    }
 
     @Test
-    public void getUsersPaginated() throws IOException {
-        HttpGet getRequest = new HttpGet(BASE_URL + "/users?offset=0&limit=1");
+    public void getUserServicesPaginated() throws IOException {
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services.json?offset=0&limit=1");
         final HttpResponse response = httpClient.execute(getRequest);
         assertEquals(206, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
+
+    @Test
+    public void getUserService() throws IOException {
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services/ANOTHER_SERVICE.json");
+        HttpResponse response = httpClient.execute(getRequest);
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        log.debug(IOUtils.toString(response.getEntity().getContent()));
+    }
     
     @Test
-    public void deleteUser() throws IOException {
-        HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c");
+    public void deleteUserService() throws IOException {
+        HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services/ANOTHER_SERVICE.json");
         HttpResponse response = httpClient.execute(deleteRequest);
         assertEquals(204, response.getStatusLine().getStatusCode());
-        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c.json");
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services/ANOTHER_SERVICE.json");
         response = httpClient.execute(getRequest);
         assertEquals(404, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
     
     @Test
-    public void deleteNotExistentUser() throws IOException {
-        HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/users/a-not-existent-user");
+    public void deleteNotExistentUserService() throws IOException {
+        HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services/NOT_EXISTING_SERVICE.json");
         HttpResponse response = httpClient.execute(deleteRequest);
         assertEquals(500, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
  
     @Test
-    public void createUser() throws UnsupportedEncodingException, IOException {
-        HttpPost postRequest = new HttpPost(BASE_URL + "/users");
-        StringEntity input = new StringEntity("{\"username\":\"carlo\",\"password\":\"carloPwd\"}");
-        input.setContentType("application/json");
-	postRequest.setEntity(input);
+    public void addUserToService() throws UnsupportedEncodingException, IOException {
+        HttpPost postRequest = new HttpPost(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services/UNUSED_SERVICE.json");
         HttpResponse response = httpClient.execute(postRequest);
         assertEquals(201, response.getStatusLine().getStatusCode());
-        log.debug(IOUtils.toString(response.getEntity().getContent()));
-    }
-    
-    @Test
-    public void updateUser() throws IOException {
-        HttpPut putRequest = new HttpPut(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c");
-        StringEntity input = new StringEntity("{\"username\":\"updUsername\",\"password\":\"updPwd\"}");
-        input.setContentType("application/json");
-	putRequest.setEntity(input);
-        HttpResponse response = httpClient.execute(putRequest);
-        assertEquals(204, response.getStatusLine().getStatusCode());
-        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c.json");
-        response = httpClient.execute(getRequest);
-        assertEquals(200, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
 }

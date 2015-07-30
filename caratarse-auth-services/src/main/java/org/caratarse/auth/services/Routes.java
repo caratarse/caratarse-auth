@@ -27,12 +27,9 @@ public abstract class Routes
     {
 		//TODO: Your routes here...
 
-                server.uri("/populates/{userId}.{format}", config.getPopulateController())
-			.method(HttpMethod.GET, HttpMethod.PUT, HttpMethod.DELETE)
-			.name(Constants.Routes.SINGLE_POPULATE);
 		server.uri("/populates.{format}", config.getPopulateController())
 			.action("readAll", HttpMethod.GET)
-			.method(HttpMethod.POST)
+			.action("deleteAll", HttpMethod.DELETE)
 			.name(Constants.Routes.POPULATE_COLLECTION);
 
                 server.uri("/users/{userUuid}.{format}", config.getUserController())

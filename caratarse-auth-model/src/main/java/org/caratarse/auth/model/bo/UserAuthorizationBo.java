@@ -95,9 +95,7 @@ public class UserAuthorizationBo {
         UserAuthorization userAuthorization
                 = userAuthorizationDao.findByUserUuidAndServiceNameAndAuthorizationName(userUuid,
                         serviceName, authorizationName);
-        if (userAuthorization != null) {
-            userAuthorization.delete();
-        }
+        userAuthorization.delete();
         ((HibernateGenericDao)userAuthorizationDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
     }
 

@@ -86,9 +86,7 @@ public class UserServiceBo {
         ((HibernateGenericDao)userServiceDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
         UserService userService
                 = userServiceDao.findByUserUuidAndServiceName(userUuid, serviceName);
-        if (userService != null) {
-            userService.delete();
-        }
+        userService.delete();
         ((HibernateGenericDao)userServiceDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
     }
     

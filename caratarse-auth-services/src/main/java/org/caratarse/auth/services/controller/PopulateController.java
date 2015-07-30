@@ -18,23 +18,13 @@
 package org.caratarse.auth.services.controller;
 
 
-import com.strategicgains.hyperexpress.HyperExpress;
-import com.strategicgains.hyperexpress.builder.TokenBinder;
-import com.strategicgains.hyperexpress.builder.TokenResolver;
 import java.util.List;
 import javax.annotation.Resource;
 import org.caratarse.auth.model.bo.UserBo;
 import org.caratarse.auth.model.po.User;
-import org.caratarse.auth.services.Constants;
 
 import org.restexpress.Request;
 import org.restexpress.Response;
-import org.restexpress.common.query.QueryFilter;
-import org.restexpress.common.query.QueryOrder;
-import org.restexpress.common.query.QueryRange;
-import org.restexpress.query.QueryFilters;
-import org.restexpress.query.QueryOrders;
-import org.restexpress.query.QueryRanges;
 
 public class PopulateController {
 
@@ -56,6 +46,11 @@ public class PopulateController {
 
     public List<User> readAll(Request request, Response response) {
         return userBo.populate();
+    }
+    
+    public void deleteAll(Request request, Response response) {
+        userBo.cleanAll();
+        response.setResponseNoContent();
     }
 
     public void update(Request request, Response response) {

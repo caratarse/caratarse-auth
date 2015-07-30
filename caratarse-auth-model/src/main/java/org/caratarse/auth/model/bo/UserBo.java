@@ -23,6 +23,7 @@ import org.caratarse.auth.model.dao.AuthorizationDao;
 import org.caratarse.auth.model.dao.ServiceDao;
 import org.caratarse.auth.model.dao.UserAuthorizationDao;
 import org.caratarse.auth.model.dao.UserDao;
+import org.caratarse.auth.model.dao.UserServiceDao;
 import org.caratarse.auth.model.po.Authorization;
 import org.caratarse.auth.model.po.Permissions;
 import org.caratarse.auth.model.po.User;
@@ -52,6 +53,8 @@ public class UserBo {
     private ServiceDao serviceDao;
     @Resource
     private AuthorizationDao authorizationDao;
+    @Resource
+    private UserServiceDao userServiceDao;
     
     @Transactional
     public List<UserAuthorization> retrieveUserDirectAuthorizations(String uuid, String serviceName) {
@@ -95,7 +98,14 @@ public class UserBo {
         final org.caratarse.auth.model.po.Service serviceTest
                 = new org.caratarse.auth.model.po.Service("TEST_SERVICE", "A service for tests");
         serviceDao.create(serviceTest);
+        final org.caratarse.auth.model.po.Service serviceAnother
+                = new org.caratarse.auth.model.po.Service("ANOTHER_SERVICE", "Another service for tests");
+        serviceDao.create(serviceAnother);
+        final org.caratarse.auth.model.po.Service serviceUnused
+                = new org.caratarse.auth.model.po.Service("UNUSED_SERVICE", "A not used service for tests");
+        serviceDao.create(serviceUnused);
         userLucio.addService(serviceTest);
+        userLucio.addService(serviceAnother);
         userMichele.addService(serviceTest);
         Authorization authorizationAdmin
                 = new Authorization("ROLE_ADMIN", "Admin authorization", serviceTest);
@@ -123,6 +133,15 @@ public class UserBo {
     @Transactional
     public void store(User user) {
         userDao.store(user);
+    }
+
+    @Transactional
+    public void cleanAll() {
+        userAuthorizationDao.deleteAll();
+        userServiceDao.deleteAll();
+        authorizationDao.deleteAll();
+        serviceDao.deleteAll();
+        userDao.deleteAll();
     }
     
 }
