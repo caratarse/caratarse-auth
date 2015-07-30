@@ -32,5 +32,6 @@ import org.lambico.dao.generic.GenericDao;
 public interface UserAuthorizationDao extends GenericDao<UserAuthorization, Long> {
 
     List<UserAuthorization> findByUserUuidAndServiceName(String uuid, String serviceName);
+    UserAuthorization findByUserUuidAndServiceNameAndAuthorizationName(String uuid, String serviceName, String authorizationName);
     
 }

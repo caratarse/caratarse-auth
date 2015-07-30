@@ -1,0 +1,40 @@
+/**
+ * Copyright (C) 2015 Caratarse Auth Team <lucio.benfante@gmail.com>
+ *
+ * This file is part of Caratarse Auth Services.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.caratarse.auth.services.util;
+
+import com.strategicgains.hyperexpress.HyperExpress;
+import org.restexpress.common.query.QueryRange;
+
+/**
+ * Some utilities for binding HyperExpress tokens.
+ *
+ * @author <a href="mailto:lucio.benfante@gmail.com">Lucio Benfante</a>
+ */
+public class HyperExpressBindHelper {
+    
+    public static void bindPaginationTokens(final QueryRange range, final long rows) {
+        if (range.hasLimit()) {
+            if (range.getOffset() + range.getLimit() <= rows) {
+                HyperExpress.bind("nextOffset", Long.toString(range.getOffset() + range.getLimit()));
+            }
+            if (range.getOffset() - range.getLimit() >= 0) {
+                HyperExpress.bind("prevOffset", Long.toString(range.getOffset() - range.getLimit()));
+            }
+        }
+    }
+}

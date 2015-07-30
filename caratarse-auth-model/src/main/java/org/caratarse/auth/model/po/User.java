@@ -18,6 +18,7 @@
 package org.caratarse.auth.model.po;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.strategicgains.syntaxe.annotation.StringValidation;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,6 +51,7 @@ import org.hibernate.annotations.Filters;
 public class User extends EntityBase implements UuidIdentified {
 
     private String uuid;
+    @StringValidation(minLength = 1)
     private String username;
     private String password;
     private Date lastLogin;
@@ -221,25 +223,28 @@ public class User extends EntityBase implements UuidIdentified {
         return result;
     }
     
-    public void addAuthorization(Authorization authorization, Permissions permissions) {
+    public UserAuthorization addAuthorization(Authorization authorization, Permissions permissions) {
+        UserAuthorization result = null;
         if (!hasAuthorization(authorization)) {
             if (hasService(authorization.getService())) {
-                UserAuthorization userAuthorization
-                        = new UserAuthorization(this, authorization, permissions);
-                this.getUserAuthorizations().add(userAuthorization);
-                authorization.getUserAuthorizations().add(userAuthorization);
+                result = new UserAuthorization(this, authorization, permissions);
+                this.getUserAuthorizations().add(result);
+                authorization.getUserAuthorizations().add(result);
             } else {
                 throw new IllegalStateException("User doesn't have service");
             }
         }
+        return result;
     }
     
-    public void addService(Service service) {
+    public UserService addService(Service service) {
+        UserService result = null;
         if (!hasService(service)) {
-            UserService userService = new UserService(this, service);
-            this.getUserServices().add(userService);
-            service.getUserServices().add(userService);
+            result = new UserService(this, service);
+            this.getUserServices().add(result);
+            service.getUserServices().add(result);
         }
+        return result;
     }
 
     /**

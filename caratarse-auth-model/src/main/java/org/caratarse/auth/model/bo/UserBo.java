@@ -27,6 +27,7 @@ import org.caratarse.auth.model.po.Authorization;
 import org.caratarse.auth.model.po.Permissions;
 import org.caratarse.auth.model.po.User;
 import org.caratarse.auth.model.po.UserAuthorization;
+import org.caratarse.auth.model.util.Constants;
 import org.caratarse.auth.model.util.CriteriaFilterHelper;
 import org.hibernate.criterion.DetachedCriteria;
 import org.lambico.dao.generic.Page;
@@ -54,7 +55,7 @@ public class UserBo {
     
     @Transactional
     public List<UserAuthorization> retrieveUserDirectAuthorizations(String uuid, String serviceName) {
-        ((HibernateGenericDao)userAuthorizationDao).setFilterNames("limitByNotDeleted");
+        ((HibernateGenericDao)userAuthorizationDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
         List<UserAuthorization> result = userAuthorizationDao.findByUserUuidAndServiceName(uuid, serviceName);
         ((HibernateGenericDao)userAuthorizationDao).setFilterNames();
         return result;
@@ -66,17 +67,19 @@ public class UserBo {
         DetachedCriteria crit = DetachedCriteria.forClass(User.class);
         CriteriaFilterHelper.addQueryFilter(crit, filter);
         CriteriaFilterHelper.addQueryOrder(crit, order);
+        ((HibernateGenericDao)userDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
         if (range != null && range.isInitialized()) {
             result = ((HibernateGenericDao)userDao).searchPaginatedByCriteria(crit, (int) range.getOffset(), range.getLimit());
         } else {
             result = ((HibernateGenericDao)userDao).searchPaginatedByCriteria(crit, 0, 0);
         }
+        ((HibernateGenericDao)userDao).setFilterNames();
         return result;
     }
 
     @Transactional
     public User getUser(String uuid) {
-        ((HibernateGenericDao)userDao).setFilterNames("limitByNotDeleted");
+        ((HibernateGenericDao)userDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
         final User user = userDao.findByUuid(uuid);
         ((HibernateGenericDao)userDao).setFilterNames();
         return user;
@@ -111,8 +114,10 @@ public class UserBo {
 
     @Transactional
     public void deleteUser(String uuid) {
+        ((HibernateGenericDao)userDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
         User user = userDao.findByUuid(uuid);
         user.delete();
+        ((HibernateGenericDao)userDao).setFilterNames();
     }
 
     @Transactional

@@ -21,7 +21,6 @@ import com.strategicgains.hyperexpress.HyperExpress;
 import com.strategicgains.hyperexpress.builder.TokenBinder;
 import com.strategicgains.hyperexpress.builder.TokenResolver;
 import com.strategicgains.hyperexpress.builder.UrlBuilder;
-import static com.strategicgains.repoexpress.adapter.Identifiers.UUID;
 import com.strategicgains.syntaxe.ValidationEngine;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -30,6 +29,7 @@ import javax.annotation.Resource;
 import org.caratarse.auth.model.bo.UserBo;
 import org.caratarse.auth.model.po.User;
 import org.caratarse.auth.services.Constants;
+import org.caratarse.auth.services.util.HyperExpressBindHelper;
 import org.lambico.dao.generic.Page;
 
 import org.restexpress.Request;
@@ -40,7 +40,6 @@ import org.restexpress.common.query.QueryRange;
 import org.restexpress.query.QueryFilters;
 import org.restexpress.query.QueryOrders;
 import org.restexpress.query.QueryRanges;
-import org.springframework.transaction.annotation.Transactional;
 
 public class UserController {
 
@@ -60,10 +59,10 @@ public class UserController {
         response.setResponseCreated();
 
         TokenResolver resolver = HyperExpress.bind(Constants.Url.USER_UUID, user.getUuid());
-//        addTokenBinder();
 
         // Include the Location header...
-        String locationPattern = request.getNamedUrl(HttpMethod.GET, Constants.Routes.USER_READ_ROUTE);
+        String locationPattern = request.getNamedUrl(HttpMethod.GET,
+                Constants.Routes.USER_READ_ROUTE);
         response.addLocationHeader(LOCATION_BUILDER.build(locationPattern, resolver));
 
         // Return the newly-created item...
@@ -88,8 +87,8 @@ public class UserController {
         QueryRange range = QueryRanges.parseFrom(request, 20);
         Page<User> entities = userBo.readAll(filter, range, order);
         response.setCollectionResponse(range, entities.getList().size(), entities.getRowCount());
-
-        addTokenBinder(range, entities.getRowCount(), filter);
+        HyperExpressBindHelper.bindPaginationTokens(range, entities.getRowCount());
+        addTokenBinder();
 
         return entities.getList();
     }
@@ -101,32 +100,6 @@ public class UserController {
             public void bind(User entity, TokenResolver resolver) {
                 resolver.bind(Constants.Url.USER_UUID, entity.getUuid())
                         .bind(Constants.Url.USER_ID, entity.getId().toString());
-            }
-        });
-    }
-
-    private void addTokenBinder(final QueryRange range, final long rows, final QueryFilter filter) {
-        // Bind the resources in the collection with link URL tokens, etc. here...
-        HyperExpress.tokenBinder(new TokenBinder<User>() {
-            @Override
-            public void bind(User entity, TokenResolver resolver) {
-                resolver.bind(Constants.Url.USER_UUID, entity.getUuid())
-                        .bind(Constants.Url.USER_ID, entity.getId().toString());
-                if (range.hasLimit()) {
-                    if (range.getOffset() + range.getLimit() <= rows) {
-                        resolver.bind("nextOffset", Long.toString(range.getOffset() + range.
-                                getLimit()));
-                    }
-                    if (range.getOffset() - range.getLimit() >= 0) {
-                        resolver.bind("prevOffset", Long.toString(range.getOffset() - range.
-                                getLimit()));
-                    }
-                    resolver.bind("offset", Long.toString(range.getOffset() + range.getLimit()));
-                    resolver.bind("limit", Integer.toString(range.getLimit()));
-                }
-                if (filter != null) {
-                    resolver.bind("filter", filter.toString());
-                }
             }
         });
     }

@@ -18,7 +18,20 @@
 package org.caratarse.auth.model.bo;
 
 import java.util.List;
+import javax.annotation.Resource;
+import org.caratarse.auth.model.dao.UserServiceDao;
+import org.caratarse.auth.model.po.Service;
+import org.caratarse.auth.model.po.User;
 import org.caratarse.auth.model.po.UserService;
+import org.caratarse.auth.model.util.Constants;
+import org.caratarse.auth.model.util.CriteriaFilterHelper;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
+import org.lambico.dao.generic.Page;
+import org.lambico.dao.spring.hibernate.HibernateGenericDao;
+import org.restexpress.common.query.QueryFilter;
+import org.restexpress.common.query.QueryOrder;
+import org.restexpress.common.query.QueryRange;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -26,13 +39,57 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author <a href="mailto:lucio.benfante@gmail.com">Lucio Benfante</a>
  */
+@org.springframework.stereotype.Service
 public class UserServiceBo {
+    @Resource
+    private UserServiceDao userServiceDao;
+    @Resource
+    private UserBo userBo;
+    @Resource
+    private ServiceBo serviceBo;
     
     @Transactional
     public List<UserService> findServicesByUser(String userUuid) {
-        List<UserService> result = null;
-        
+        User user = userBo.getUser(userUuid);
+        List<UserService> result = user.getUserServices();
+        result.size();
         return result;
+    }
+
+    @Transactional
+    public UserService addServiceToUser(String userUuid, String serviceName) {
+        User user = userBo.getUser(userUuid);
+        Service service = serviceBo.getService(serviceName);
+        return user.addService(service);
+    }
+    
+    @Transactional
+    public Page<UserService> readAllByUser(String userUuid, QueryFilter filter, QueryRange range, QueryOrder order) {
+        Page<UserService> result = null;
+        DetachedCriteria crit = DetachedCriteria.forClass(UserService.class);
+        crit.createAlias("user", "user");
+        crit.add(Restrictions.eq("user.uuid", userUuid));
+        CriteriaFilterHelper.addQueryFilter(crit, filter);
+        CriteriaFilterHelper.addQueryOrder(crit, order);
+        ((HibernateGenericDao)userServiceDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
+        if (range != null && range.isInitialized()) {
+            result = ((HibernateGenericDao)userServiceDao).searchPaginatedByCriteria(crit, (int) range.getOffset(), range.getLimit());
+        } else {
+            result = ((HibernateGenericDao)userServiceDao).searchPaginatedByCriteria(crit, 0, 0);
+        }
+        ((HibernateGenericDao)userServiceDao).setFilterNames();
+        return result;
+    }
+
+    @Transactional
+    public void delete(String userUuid, String serviceName) {
+        ((HibernateGenericDao)userServiceDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
+        UserService userService
+                = userServiceDao.findByUserUuidAndServiceName(userUuid, serviceName);
+        if (userService != null) {
+            userService.delete();
+        }
+        ((HibernateGenericDao)userServiceDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
     }
     
 }

@@ -32,7 +32,8 @@ public class Constants
 		public static final String USER_UUID = "userUuid";
 		public static final String POPULATE_ID = "populateId";
                 public static final String USER_SERVICE_ID = "userServiceId";
-                public static final String SERVICE_NAME = "userServiceName";
+                public static final String SERVICE_NAME = "serviceName";
+                public static final String AUTHORIZATION_NAME = "authorizationName";
                 public static final String USER_AUTHORIZATION_ID = "userAuthorizationId";
 	}
 

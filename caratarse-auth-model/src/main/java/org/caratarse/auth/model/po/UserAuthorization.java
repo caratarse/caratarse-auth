@@ -23,6 +23,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import org.caratarse.auth.model.util.BeanUtils;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
 
@@ -34,7 +35,9 @@ import org.hibernate.annotations.Filters;
 @Filters({@Filter(name = "limitByNotDeleted")})
 @NamedQueries({
     @NamedQuery(name = "UserAuthorization.findByUserUuidAndServiceName",
-            query = "from UserAuthorization ua where ua.user.uuid = ? and ua.authorization.service.name = ?")
+            query = "from UserAuthorization ua where ua.user.uuid = ? and ua.authorization.service.name = ?"),
+    @NamedQuery(name = "UserAuthorization.findByUserUuidAndServiceNameAndAuthorizationName",
+            query = "from UserAuthorization ua where ua.user.uuid = ? and ua.authorization.service.name = ? and ua.authorization.name = ?")
 })
 @Entity
 public class UserAuthorization extends EntityBase {
@@ -88,4 +91,15 @@ public class UserAuthorization extends EntityBase {
     }
 
 
+    /**
+     * Copy the allowed not-null properties from another UserAuthorization bean.
+     * 
+     * Don't copy IDs and related entities.
+     * 
+     * @param userAuthorization  The source bean.
+     */
+    public void copy(UserAuthorization userAuthorization) {
+        BeanUtils.copyNotNullProperties(user, this, "id", "user", "authorization", "deleted");
+    }
+    
 }

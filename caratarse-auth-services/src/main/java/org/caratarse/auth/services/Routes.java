@@ -44,17 +44,17 @@ public abstract class Routes
 			.name(Constants.Routes.USER_COLLECTION_READ_ROUTE);
                 server.uri("/users/{userUuid}/services.{format}", config.getUserServiceController())
                         .action("readAll", HttpMethod.GET)
-                        .method(HttpMethod.POST)
                         .name(Constants.Routes.USER_SERVICES_ROUTE);
-                server.uri("/users/{userUuid}/services/{userServiceName}.{format}", config.getUserServiceController())
-			.method(HttpMethod.GET, HttpMethod.PUT, HttpMethod.DELETE)
+                server.uri("/users/{userUuid}/services/{serviceName}.{format}", config.getUserServiceController())
+			.method(HttpMethod.GET, HttpMethod.DELETE)
+                        .action("addServiceToUser", HttpMethod.POST)
                         .name(Constants.Routes.USER_SERVICE_ROUTE);
-                server.uri("/users/{userUuid}/services/{userServiceName}/authorizations.{format}", config.getUserServiceAuthorizationController())
+                server.uri("/users/{userUuid}/services/{serviceName}/authorizations.{format}", config.getUserServiceAuthorizationController())
                         .action("readAll", HttpMethod.GET)
-                        .method(HttpMethod.POST)
                         .name(Constants.Routes.USER_SERVICE_AUTHORIZATIONS_ROUTE);
-                server.uri("/users/{userUuid}/services/{userServiceName}/authorizations/{userAuthorizationId}.{format}", config.getUserServiceAuthorizationController())
+                server.uri("/users/{userUuid}/services/{serviceName}/authorizations/{authorizationName}.{format}", config.getUserServiceAuthorizationController())
 			.method(HttpMethod.GET, HttpMethod.PUT, HttpMethod.DELETE)
+                        .action("addAuthorizationToUserForService", HttpMethod.POST)
                         .name(Constants.Routes.USER_SERVICE_AUTHORIZATION_ROUTE);
 //// or...
 //		server.regex("/some.regex", config.getRouteController());
