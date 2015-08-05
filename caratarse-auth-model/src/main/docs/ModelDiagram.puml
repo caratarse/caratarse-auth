@@ -1,0 +1,49 @@
+@startuml
+
+class User {
+    -uuid
+    -username
+    -password
+}
+
+class Authorization 
+
+class UserAuthorization {
+    -readPermission
+    -writePermission
+    -executionPermission
+}
+
+class GroupAuthorization {
+    -readPermission
+    -writePermission
+    -executionPermission
+}
+
+class Service
+
+class Group
+
+class Role
+
+class UserAttribute {
+    -name
+    -value
+}
+
+class Organization
+
+User "1" *- "n" UserAuthorization
+UserAuthorization "n" --* "1" Authorization
+User "n" o- "m" Service
+Service "1" *-- "n" Authorization
+Service "1" *-- "n" Group
+Group "1" -* "n" GroupAuthorization
+GroupAuthorization "n" --* "1" Authorization
+User "n" o-- "m" Role
+Role "1" *-- "n" Group
+UserAttribute "1" -- "1" User
+Organization "1" *-- "n" User
+Organization "1" o-- "n" Organization : sub-unit
+
+@enduml
