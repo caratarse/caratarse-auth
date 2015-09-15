@@ -44,7 +44,7 @@ UserRole "0..n" *-- "m" Resource
 Group "1" -* "n" GroupAuthorization
 GroupAuthorization "n" -* "1" Authorization
 Role "1" *-- "n" Group
-UserAttribute "1" -- "1" User
+UserAttribute "n" -- "1" User
 Resource "1" o-- "n" Resource : sub-resource
 
 @enduml
