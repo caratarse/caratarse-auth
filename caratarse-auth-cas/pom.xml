@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.caratarse.auth</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <name>Caratarse Auth CAS</name>
+    <description>A CAS server configured for using Caratarse Auth.</description>
+    <artifactId>cas</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <main.basedir>${basedir}/..</main.basedir>
+        <cas.version>3.4.8</cas.version>
+        <tomcat_cas.remote.container.id>tomcat6x</tomcat_cas.remote.container.id>
+        <tomcat_cas.remote.manager.url>http://localhost:8080/manager</tomcat_cas.remote.manager.url>
+        <tomcat_cas.remote.username>manager</tomcat_cas.remote.username>
+        <tomcat_cas.remote.password>password</tomcat_cas.remote.password>
+        <header.styles>background-image: linear-gradient(to bottom,#900,#900);</header.styles>
+        <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
+    </properties>
+
+    <build>
+        <finalName>caratarse-auth-cas</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <targetPath>WEB-INF</targetPath>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                            <includes>
+                                <include>deployerConfigContext.xml</include>
+                            </includes>
+                        </resource>
+                        <resource>
+                            <filtering>false</filtering>
+                            <targetPath>WEB-INF</targetPath>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                            <excludes>
+                                <exclude>deployerConfigContext.xml</exclude>
+                            </excludes>
+                        </resource>
+                    </webResources>
+                </configuration>                
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.4.0</version>
+                <configuration>
+                    <wait>false</wait>
+                    <container>
+                        <containerId>${tomcat_cas.remote.container.id}</containerId>
+                        <type>remote</type>
+                    </container>
+                    <configuration>
+                        <type>runtime</type>
+                        <properties>
+                            <cargo.remote.uri>${tomcat_cas.remote.manager.url}</cargo.remote.uri>
+                            <cargo.remote.username>${tomcat_cas.remote.username}</cargo.remote.username>
+                            <cargo.remote.password>${tomcat_cas.remote.password}</cargo.remote.password>
+                        </properties>
+                    </configuration>
+                    <deployables>
+                        <deployable>
+                            <groupId>org.caratarse.auth</groupId>
+                            <artifactId>cas</artifactId>
+                            <type>war</type>
+                        </deployable>
+                    </deployables>
+                </configuration>
+            </plugin>                        
+        </plugins>
+    </build>
+ 
+    <dependencies>
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-webapp</artifactId>
+            <version>${cas.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.caratarse.auth</groupId>
+            <artifactId>cas-support</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

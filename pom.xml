@@ -12,6 +12,9 @@
     <modules>
         <module>caratarse-auth-model</module>
         <module>caratarse-auth-services</module>
+        <module>caratarse-auth-client-java</module>
+        <module>caratarse-auth-cas-support</module>
+        <module>caratarse-auth-cas</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -78,6 +81,21 @@
                 <artifactId>commons-dbcp</artifactId>
                 <version>1.4</version>
             </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.6.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
@@ -135,6 +153,8 @@
                         <exclude>README.md</exclude>
                         <exclude>.idea/**</exclude>
                         <exclude>**/*.iml</exclude>
+                        <exclude>src/main/webapp/assets/js/vendor/**</exclude>
+                        <exclude>src/main/webapp/assets/css/vendor/**</exclude>
                     </excludes>
                     <properties>
                         <name>${project.name}</name>

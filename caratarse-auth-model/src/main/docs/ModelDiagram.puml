@@ -33,17 +33,22 @@ class UserAttribute {
 
 class Organization
 
+class UserRole
+
 User "1" *- "n" UserAuthorization
 UserAuthorization "n" --* "1" Authorization
-User "n" o- "m" Service
+UserAuthorization "0..1" *-- "n" Organization
+User "1" *- "n" UserRole
+UserRole "n" --* "1" Role
+UserRole "0..1" *-- "n" Organization
+User "n" o-- "m" Service
 Service "1" *-- "n" Authorization
 Service "1" *-- "n" Group
 Group "1" -* "n" GroupAuthorization
-GroupAuthorization "n" --* "1" Authorization
-User "n" o-- "m" Role
+GroupAuthorization "n" -* "1" Authorization
 Role "1" *-- "n" Group
 UserAttribute "1" -- "1" User
-Organization "1" *-- "n" User
+Organization "m" *-- "n" User
 Organization "1" o-- "n" Organization : sub-unit
 
 @enduml
