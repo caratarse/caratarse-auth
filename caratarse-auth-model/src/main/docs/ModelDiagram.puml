@@ -20,8 +20,6 @@ class GroupAuthorization {
     -executionPermission
 }
 
-class Service
-
 class Group
 
 class Role
@@ -31,24 +29,22 @@ class UserAttribute {
     -value
 }
 
-class Organization
+class Resource {
+    -type
+}
 
 class UserRole
 
 User "1" *- "n" UserAuthorization
 UserAuthorization "n" --* "1" Authorization
-UserAuthorization "0..1" *-- "n" Organization
+UserAuthorization "0..n" *-- "m" Resource
 User "1" *- "n" UserRole
 UserRole "n" --* "1" Role
-UserRole "0..1" *-- "n" Organization
-User "n" o-- "m" Service
-Service "1" *-- "n" Authorization
-Service "1" *-- "n" Group
+UserRole "0..n" *-- "m" Resource
 Group "1" -* "n" GroupAuthorization
 GroupAuthorization "n" -* "1" Authorization
 Role "1" *-- "n" Group
 UserAttribute "1" -- "1" User
-Organization "m" *-- "n" User
-Organization "1" o-- "n" Organization : sub-unit
+Resource "1" o-- "n" Resource : sub-resource
 
 @enduml
