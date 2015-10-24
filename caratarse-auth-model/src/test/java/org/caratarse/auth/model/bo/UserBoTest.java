@@ -42,10 +42,8 @@ public class UserBoTest extends BaseTest {
     @Test
     public void retrieveUserDirectAuthorizations() {
         String uuid = "12345678-1234-1234-1234-123456781234";
-        String serviceName = "service1";
-        List<UserAuthorization> result
-                = userBo.retrieveUserDirectAuthorizations(uuid, serviceName);
-        assertSize(2, result);
+        List<UserAuthorization> result = userBo.retrieveUserDirectAuthorizations(uuid);
+        assertSize(3, result);
     }
     
     @Test

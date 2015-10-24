@@ -34,10 +34,10 @@ import org.hibernate.annotations.Filters;
  */
 @Filters({@Filter(name = "limitByNotDeleted")})
 @NamedQueries({
-    @NamedQuery(name = "UserAuthorization.findByUserUuidAndServiceName",
-            query = "from UserAuthorization ua where ua.user.uuid = ? and ua.authorization.service.name = ?"),
-    @NamedQuery(name = "UserAuthorization.findByUserUuidAndServiceNameAndAuthorizationName",
-            query = "from UserAuthorization ua where ua.user.uuid = ? and ua.authorization.service.name = ? and ua.authorization.name = ?")
+    @NamedQuery(name = "UserAuthorization.findByUserUuid",
+            query = "from UserAuthorization ua where ua.user.uuid = ?"),
+    @NamedQuery(name = "UserAuthorization.findByUserUuidAndAuthorizationName",
+            query = "from UserAuthorization ua where ua.user.uuid = ? and ua.authorization.name = ?")
 })
 @Entity
 public class UserAuthorization extends EntityBase {

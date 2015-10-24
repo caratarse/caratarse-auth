@@ -59,8 +59,6 @@ public class User extends EntityBase implements UuidIdentified {
     private Date creationDate;
     private Date updatedDate;
     private Date disabled;
-    @JsonManagedReference(value = "user-service")
-    private List<UserService> userServices;
     @JsonManagedReference(value = "user-authorization")
     private List<UserAuthorization> userAuthorizations;
 
@@ -151,19 +149,6 @@ public class User extends EntityBase implements UuidIdentified {
         this.disabled = disabled;
     }
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "user")
-    @Filters({@Filter(name = "limitByNotDeleted")})
-    public List<UserService> getUserServices() {
-        if (userServices == null) {
-            userServices = new LinkedList<UserService>();
-        }
-        return userServices;
-    }
-
-    public void setUserServices(List<UserService> userServices) {
-        this.userServices = userServices;
-    }
-
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "user")
     @Filters({@Filter(name = "limitByNotDeleted")})
@@ -181,12 +166,6 @@ public class User extends EntityBase implements UuidIdentified {
     @Override
     protected void doRecursiveDelete() {
         super.doRecursiveDelete();
-        final List<UserService> services = getUserServices();
-        if (services != null && !services.isEmpty()) {
-            for (UserService userService : services) {
-                userService.delete();
-            }
-        }
         List<UserAuthorization> userAuthorizations = getUserAuthorizations();
         if (userAuthorizations != null && !userAuthorizations.isEmpty()) {
             for (UserAuthorization userAuthorization : userAuthorizations) {
@@ -209,40 +188,12 @@ public class User extends EntityBase implements UuidIdentified {
         return result;
     }
     
-    public boolean hasService(Service service) {
-        boolean result = false;
-        List<UserService> userServices = getUserServices();
-        if (userServices != null && !userServices.isEmpty()) {
-            for (UserService userService : userServices) {
-                if (service.equals(userService.getService())) {
-                    result = true;
-                    break;
-                }
-            }
-        }
-        return result;
-    }
-    
     public UserAuthorization addAuthorization(Authorization authorization, Permissions permissions) {
         UserAuthorization result = null;
         if (!hasAuthorization(authorization)) {
-            if (hasService(authorization.getService())) {
-                result = new UserAuthorization(this, authorization, permissions);
-                this.getUserAuthorizations().add(result);
-                authorization.getUserAuthorizations().add(result);
-            } else {
-                throw new IllegalStateException("User doesn't have service");
-            }
-        }
-        return result;
-    }
-    
-    public UserService addService(Service service) {
-        UserService result = null;
-        if (!hasService(service)) {
-            result = new UserService(this, service);
-            this.getUserServices().add(result);
-            service.getUserServices().add(result);
+            result = new UserAuthorization(this, authorization, permissions);
+            this.getUserAuthorizations().add(result);
+            authorization.getUserAuthorizations().add(result);
         }
         return result;
     }
@@ -255,6 +206,6 @@ public class User extends EntityBase implements UuidIdentified {
      * @param user The source bean.
      */
     public void copy(User user) {
-        BeanUtils.copyNotNullProperties(user, this, "id", "uuid", "deleted", "userAuthorizations", "userServices");
+        BeanUtils.copyNotNullProperties(user, this, "id", "uuid", "deleted", "userAuthorizations");
     }
 }

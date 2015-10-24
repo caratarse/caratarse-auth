@@ -19,16 +19,13 @@ package org.caratarse.auth.model.dao;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 import org.caratarse.auth.model.po.Authorization;
 import org.caratarse.auth.model.po.Permissions;
-import org.caratarse.auth.model.po.Service;
 import org.caratarse.auth.model.po.User;
-import org.caratarse.auth.model.po.UserService;
 import org.caratarse.auth.model.test.AdjustableDateTimeProvider;
 import org.caratarse.auth.model.test.BaseTest;
 import org.caratarse.auth.model.util.DateTimeProviderHolder;
@@ -133,32 +130,13 @@ public class UserDaoTest extends BaseTest {
         user.delete();
         assertThat(user.getDeleted(), is(Date.from(deleteDate.toInstant(ZoneOffset.UTC))));
     }
-
-    @Test
-    public void logicallyDeleteUserAndServiceLinks() {
-        String username = "user1";
-        User user = userDao.findByUsername(username);
-        List<UserService> userServices = user.getUserServices();
-        List<Service> services = new ArrayList<Service>();
-        for (UserService userService : userServices) {
-            services.add(userService.getService());
-        }
-        user.delete();
-        assertTrue(user.checkDeleted());
-        for (UserService userService : userServices) {
-            assertTrue(userService.checkDeleted());
-        }
-        for (Service service : services) {
-            assertFalse(service.checkDeleted());
-        }
-    }
     
     @Test
     public void addAutorizationToUser() {
         String username = "user1";
         User user = userDao.findByUsername(username);
         int oldSize = user.getUserAuthorizations().size();
-        Authorization authorization = authorizationDao.findByNameAndService("ROLE_FOURTH", "service1");
+        Authorization authorization = authorizationDao.findByName("ROLE_FOURTH");
         user.addAuthorization(authorization, Permissions.R);        
         userDao.store(user);
         ((HibernateGenericDao)userDao).getHibernateTemplate().flush();
@@ -166,14 +144,6 @@ public class UserDaoTest extends BaseTest {
         user = userDao.findByUsername(username);
         assertSize(oldSize + 1, user.getUserAuthorizations());
         assertTrue(user.hasAuthorization(authorization));
-    }
-    
-    @Test(expected = IllegalStateException.class)
-    public void addAutorizationToUserWithoutService() {
-        String username = "user1";
-        User user = userDao.findByUsername(username);
-        Authorization authorization = authorizationDao.findByNameAndService("ROLE_THIRD", "service2");
-        user.addAuthorization(authorization, Permissions.R);
     }
     
 }

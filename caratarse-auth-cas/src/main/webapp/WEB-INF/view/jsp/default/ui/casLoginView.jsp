@@ -74,7 +74,7 @@
                     </form:errors>
 
                     <div class="control-group">
-                        <label class="control-label" for="username"><spring:message code="credential.email" /></label>
+                        <label class="control-label" for="username"><spring:message code="credential.username" /></label>
                         <div class="controls">
                             <c:if test="${not empty sessionScope.openIdLocalId}">
                                 <strong>${sessionScope.openIdLocalId}</strong>

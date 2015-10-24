@@ -17,7 +17,6 @@
  */
 package org.caratarse.auth.services.controller;
 
-
 import com.strategicgains.hyperexpress.HyperExpress;
 import com.strategicgains.hyperexpress.builder.TokenBinder;
 import com.strategicgains.hyperexpress.builder.TokenResolver;
@@ -28,14 +27,13 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
-import org.caratarse.auth.model.bo.ServiceBo;
+import org.caratarse.auth.model.bo.AuthorizationBo;
+import org.caratarse.auth.model.bo.UserAuthorizationBo;
 import org.caratarse.auth.model.bo.UserBo;
-import org.caratarse.auth.model.bo.UserServiceBo;
-import org.caratarse.auth.model.dao.ServiceDao;
-import org.caratarse.auth.model.dao.UserServiceDao;
-import org.caratarse.auth.model.po.Service;
+import org.caratarse.auth.model.dao.UserAuthorizationDao;
+import org.caratarse.auth.model.po.Authorization;
 import org.caratarse.auth.model.po.User;
-import org.caratarse.auth.model.po.UserService;
+import org.caratarse.auth.model.po.UserAuthorization;
 import org.caratarse.auth.services.Constants;
 import org.caratarse.auth.services.util.HyperExpressBindHelper;
 import org.lambico.dao.generic.Page;
@@ -50,36 +48,39 @@ import org.restexpress.query.QueryOrders;
 import org.restexpress.query.QueryRanges;
 import org.springframework.transaction.annotation.Transactional;
 
-public class UserServiceController {
+public class UserAuthorizationController {
 
     private static final UrlBuilder LOCATION_BUILDER = new UrlBuilder();
     @Resource
-    private UserServiceDao userServiceDao;
-    @Resource
-    private ServiceDao serviceDao;
-    @Resource
     private UserBo userBo;
     @Resource
-    private UserServiceBo userServiceBo;
+    private AuthorizationBo authorizationBo;
     @Resource
-    private ServiceBo serviceBo;
+    private UserAuthorizationDao userAuthorizationDao;
+    @Resource
+    private UserAuthorizationBo userAuthorizationBo;
 
-    public UserServiceController() {
+    public UserAuthorizationController() {
     }
 
-    public UserService addServiceToUser(Request request, Response response) {
+    public UserAuthorization addAuthorizationToUser(Request request, Response response) {
         String userUuid = request.getHeader(Constants.Url.USER_UUID, "No User UUID supplied");
-        String serviceName = request.getHeader(Constants.Url.SERVICE_NAME, "No Service Name supplied");
-        
-        validateAndThrow(userUuid, serviceName);
+        String authorizationName = request.getHeader(Constants.Url.AUTHORIZATION_NAME,
+                "No Authorization Name supplied");
+        UserAuthorization userAuthorizationPermissions = request.getBodyAs(UserAuthorization.class,
+                "UserAuthorization with permissions details not provided");
 
-        UserService userService = userServiceBo.addServiceToUser(userUuid, serviceName);
+        validateAndThrow(userUuid, authorizationName);
+
+        UserAuthorization userAuthorization = userAuthorizationBo.addAuthorizationToUser(
+                userUuid, authorizationName,
+                userAuthorizationPermissions.getPermissions());
 
         // Construct the response for create...
         response.setResponseCreated();
 
         TokenResolver resolver = HyperExpress.bind(Constants.Url.USER_UUID, userUuid)
-                .bind(Constants.Url.SERVICE_NAME, serviceName);
+                .bind(Constants.Url.AUTHORIZATION_NAME, authorizationName);
 
         // Include the Location header...
         String locationPattern = request.getNamedUrl(HttpMethod.GET,
@@ -87,29 +88,32 @@ public class UserServiceController {
         response.addLocationHeader(LOCATION_BUILDER.build(locationPattern, resolver));
 
         // Return the newly-created item...
-        return userService;
+        return userAuthorization;
     }
 
-    public UserService read(Request request, Response response) {
+    public UserAuthorization read(Request request, Response response) {
         String userUuid = request.getHeader(Constants.Url.USER_UUID, "No User UUID supplied");
-        String serviceName = request.getHeader(Constants.Url.SERVICE_NAME, "No UserService name supplied");
-        UserService userService = userServiceDao.findByUserUuidAndServiceName(userUuid, serviceName);
-        if (userService == null) {
+        String authorizationName = request.getHeader(Constants.Url.AUTHORIZATION_NAME,
+                "No Authorization Name supplied");
+        UserAuthorization userAuthorization = userAuthorizationBo.findUserAuthorization(userUuid,
+                authorizationName);
+        if (userAuthorization == null) {
             response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
         }
 
         addTokenBinder();
 
-        return userService;
+        return userAuthorization;
     }
 
     @Transactional
-    public List<UserService> readAll(Request request, Response response) {
+    public List<UserAuthorization> readAll(Request request, Response response) {
         String uuid = request.getHeader(Constants.Url.USER_UUID, "No User UUID supplied");
         QueryFilter filter = QueryFilters.parseFrom(request);
         QueryOrder order = QueryOrders.parseFrom(request);
         QueryRange range = QueryRanges.parseFrom(request, Constants.DEFAULT_RANGE_LIMIT);
-        Page<UserService> entities = userServiceBo.readAllByUser(uuid, filter, range, order);
+        Page<UserAuthorization> entities
+                = userAuthorizationBo.readAllByUserAndService(uuid, filter, range, order);
         response.setCollectionResponse(range, entities.getList().size(), entities.getRowCount());
         HyperExpressBindHelper.bindPaginationTokens(range, entities.getRowCount());
         addTokenBinder();
@@ -119,11 +123,11 @@ public class UserServiceController {
 
     private void addTokenBinder() {
         // Bind the resources in the collection with link URL tokens, etc. here...
-        HyperExpress.tokenBinder(new TokenBinder<UserService>() {
+        HyperExpress.tokenBinder(new TokenBinder<UserAuthorization>() {
             @Override
-            public void bind(UserService entity, TokenResolver resolver) {
-                resolver.bind(Constants.Url.USER_SERVICE_ID, entity.getId().toString())
-                        .bind(Constants.Url.SERVICE_NAME, entity.getService().getName())
+            public void bind(UserAuthorization entity, TokenResolver resolver) {
+                resolver.bind(Constants.Url.USER_AUTHORIZATION_ID, entity.getId().toString())
+                        .bind(Constants.Url.AUTHORIZATION_NAME, entity.getAuthorization().getName())
                         .bind(Constants.Url.USER_UUID, entity.getUser().getUuid())
                         .bind(Constants.Url.USER_ID, entity.getUser().getId().toString());
             }
@@ -131,40 +135,50 @@ public class UserServiceController {
     }
 
     public void update(Request request, Response response) {
-        //TODO: Your 'PUT' logic here...
+        String userUuid = request.getHeader(Constants.Url.USER_UUID, "No User UUID supplied");
+        String authorizationName = request.getHeader(Constants.Url.AUTHORIZATION_NAME,
+                "No Authorization Name supplied");
+        UserAuthorization dbUserAuthorization
+                = userAuthorizationBo.findUserAuthorization(userUuid, authorizationName);
+        if (dbUserAuthorization == null) {
+            response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
+            return;
+        }
+
+        UserAuthorization userAuthorizationPermissions = request.getBodyAs(UserAuthorization.class,
+                "UserAuthorization with permissions details not provided");
+        dbUserAuthorization.copy(userAuthorizationPermissions);
+        userAuthorizationBo.store(dbUserAuthorization);
         response.setResponseNoContent();
     }
 
     public void delete(Request request, Response response) {
         String userUuid = request.getHeader(Constants.Url.USER_UUID, "No User UUID supplied");
-        String serviceName = request.getHeader(Constants.Url.SERVICE_NAME, "No UserService name supplied");
-        userServiceBo.delete(userUuid, serviceName);
+        String authorizationName = request.getHeader(Constants.Url.AUTHORIZATION_NAME,
+                "No Authorization Name supplied");
+        userAuthorizationBo.delete(userUuid, authorizationName);
         response.setResponseNoContent();
     }
 
-    private void validateAndThrow(String userUuid, String serviceName) {
+    private void validateAndThrow(String userUuid, String authorizationName) {
         List<String> errors = new ArrayList<>();
         User user = userBo.getUser(userUuid);
         if (user == null) {
-            errors.add("User with UUID "+userUuid+" not found.");
+            errors.add("User with UUID " + userUuid + " not found.");
         }
-        Service service = serviceBo.getService(serviceName);
-        if (service == null) {
-            errors.add("Service with name "+serviceName+" not found.");
+        Authorization authorization
+                = authorizationBo.findAuthorization(authorizationName);
+        if (authorization == null) {
+            errors.add("Authorization with name " + authorizationName + " not found.");
         }
-        List<UserService> userServices = userServiceBo.findServicesByUser(userUuid);
-        boolean found = false;
-        for (UserService userService : userServices) {
-            if (userService.getService().getName().equals(serviceName)) {
-                found = true;
-                break;
-            }
-        }
-        if (found) {
-            errors.add("User "+userUuid+" already attached to Service "+serviceName+".");
+        UserAuthorization userAuthorization
+                = userAuthorizationBo.findUserAuthorization(userUuid, authorizationName);
+        if (userAuthorization != null) {
+            errors.add("Authorization " + authorizationName + " already attached to user " + userUuid + ".");
         }
         if (!errors.isEmpty()) {
             throw new ValidationException(errors);
         }
     }
+
 }

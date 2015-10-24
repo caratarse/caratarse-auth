@@ -56,6 +56,9 @@ public class CaratarseAuthClientAuthenticationHandler extends AbstractUsernamePa
             ObjectMapper m = new ObjectMapper();
             JsonNode rootTree = m.readTree(response.getContent());
             userTree = rootTree.get("_embedded").get("users").get(0);
+            if (userTree == null) {
+                throw new UnknownUsernameAuthenticationException();                
+            }
         } catch (Exception ex) {
             throw new AuthenticationException("Authentication failed for user "+transformedUsername, ex) {};
         }

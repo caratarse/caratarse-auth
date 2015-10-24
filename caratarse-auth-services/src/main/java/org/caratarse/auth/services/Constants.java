@@ -31,8 +31,6 @@ public class Constants
 		public static final String USER_ID = "userId";
 		public static final String USER_UUID = "userUuid";
 		public static final String POPULATE_ID = "populateId";
-                public static final String USER_SERVICE_ID = "userServiceId";
-                public static final String SERVICE_NAME = "serviceName";
                 public static final String AUTHORIZATION_NAME = "authorizationName";
                 public static final String USER_AUTHORIZATION_ID = "userAuthorizationId";
 	}
@@ -50,9 +48,7 @@ public class Constants
 		public static final String USER_COLLECTION_READ_ROUTE = "user.collection.read.route";
 		public static final String SINGLE_POPULATE = "populate.single.route";
 		public static final String POPULATE_COLLECTION = "populate.collection.route";
-                public static final String USER_SERVICES_ROUTE = "user.services.route";
-                public static final String USER_SERVICE_ROUTE = "user.service.route";
-                public static final String USER_SERVICE_AUTHORIZATIONS_ROUTE = "user.service.authorizations.route";
-                public static final String USER_SERVICE_AUTHORIZATION_ROUTE = "user.service.authorization.route";
+                public static final String USER_AUTHORIZATIONS_ROUTE = "user.authorizations.route";
+                public static final String USER_AUTHORIZATION_ROUTE = "user.authorization.route";
 	}
 }

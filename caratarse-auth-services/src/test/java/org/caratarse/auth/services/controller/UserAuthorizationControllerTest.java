@@ -42,7 +42,7 @@ import org.caratarse.auth.services.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserServiceControllerTest {
+public class UserAuthorizationControllerTest {
 
     /**
      * The REST server that handles the test calls.
@@ -50,7 +50,7 @@ public class UserServiceControllerTest {
     private static RestExpress server;
     private HttpClient httpClient;
     private static final String BASE_URL = "http://localhost:8081";
-    final Logger log = LoggerFactory.getLogger(UserServiceControllerTest.class);
+    final Logger log = LoggerFactory.getLogger(UserAuthorizationControllerTest.class);
 
 
     @BeforeClass
@@ -87,8 +87,8 @@ public class UserServiceControllerTest {
     }
     
     @Test
-    public void getUserServices() throws IOException {
-        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services.json");
+    public void getUserAuthorizations() throws IOException {
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/authorizations.json");
         final HttpResponse response = httpClient.execute(getRequest);
         assertEquals(200, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
@@ -96,45 +96,63 @@ public class UserServiceControllerTest {
 
 
     @Test
-    public void getUserServicesPaginated() throws IOException {
-        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services.json?offset=0&limit=1");
+    public void getUserAuthorizationsPaginated() throws IOException {
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/authorizations.json?offset=0&limit=1");
         final HttpResponse response = httpClient.execute(getRequest);
         assertEquals(206, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
 
     @Test
-    public void getUserService() throws IOException {
-        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services/ANOTHER_SERVICE.json");
+    public void getUserAuthorization() throws IOException {
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/authorizations/ROLE_ADMIN.json");
         HttpResponse response = httpClient.execute(getRequest);
         assertEquals(200, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
     
     @Test
-    public void deleteUserService() throws IOException {
-        HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services/ANOTHER_SERVICE.json");
+    public void deleteUserAuthorization() throws IOException {
+        HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/authorizations/ROLE_ADMIN.json");
         HttpResponse response = httpClient.execute(deleteRequest);
         assertEquals(204, response.getStatusLine().getStatusCode());
-        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services/ANOTHER_SERVICE.json");
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/authorizations/ROLE_ADMIN.json");
         response = httpClient.execute(getRequest);
         assertEquals(404, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
     
     @Test
-    public void deleteNotExistentUserService() throws IOException {
-        HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services/NOT_EXISTING_SERVICE.json");
+    public void deleteNotExistentUserAuthorization() throws IOException {
+        HttpDelete deleteRequest = new HttpDelete(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/authorizations/ROLE_NOT_EXISTING.json");
         HttpResponse response = httpClient.execute(deleteRequest);
         assertEquals(500, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
  
     @Test
-    public void addUserToService() throws UnsupportedEncodingException, IOException {
-        HttpPost postRequest = new HttpPost(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/services/UNUSED_SERVICE.json");
+    public void addAuthorizationToUser() throws UnsupportedEncodingException, IOException {
+        HttpPost postRequest = new HttpPost(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/authorizations/ROLE_NOT_USED.json");
+        StringEntity input = new StringEntity("{\"permissions\":{ \"read\": true, \"write\": false, \"execute\": true}}");
+        input.setContentType("application/json");
+	postRequest.setEntity(input);
         HttpResponse response = httpClient.execute(postRequest);
         assertEquals(201, response.getStatusLine().getStatusCode());
         log.debug(IOUtils.toString(response.getEntity().getContent()));
     }
+    
+    @Test
+    public void updateAuthorizationToUser() throws UnsupportedEncodingException, IOException {
+        HttpPut putRequest = new HttpPut(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/authorizations/ROLE_PRINTER.json");
+        StringEntity input = new StringEntity("{\"permissions\":{ \"read\": true, \"write\": false, \"execute\": false}}");
+        input.setContentType("application/json");
+	putRequest.setEntity(input);
+        HttpResponse response = httpClient.execute(putRequest);
+        assertEquals(204, response.getStatusLine().getStatusCode());
+        HttpGet getRequest = new HttpGet(BASE_URL + "/users/a1ab82a6-c8ce-4723-8532-777c4b05d03c/authorizations/ROLE_PRINTER.json");
+        response = httpClient.execute(getRequest);
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        log.debug(IOUtils.toString(response.getEntity().getContent()));
+    }
+    
 }

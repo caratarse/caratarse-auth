@@ -19,20 +19,15 @@
 - &Authorization-first
   name: "ROLE_FIRST"
   description: "The first authorization"
-  service: *Service-service1
 - &Authorization-second
   name: "ROLE_SECOND"
   description: "The second authorization"
-  service: *Service-service1
 - &Authorization-third
   name: "ROLE_THIRD"
   description: "The thirdh authorization"
-  service: *Service-service2
 - &Authorization-fourth
   name: "ROLE_FOURTH"
   description: "The fourth authorization"
-  service: *Service-service1
 - &Authorization-fifth
   name: "ROLE_FIFTH"
   description: "The fifth authorization"
-  service: *Service-service3

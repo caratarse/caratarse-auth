@@ -28,7 +28,6 @@ import com.strategicgains.hyperexpress.HyperExpress;
 import com.strategicgains.hyperexpress.RelTypes;
 import org.caratarse.auth.model.po.User;
 import org.caratarse.auth.model.po.UserAuthorization;
-import org.caratarse.auth.model.po.UserService;
 
 public abstract class Relationships {
 
@@ -51,19 +50,20 @@ public abstract class Relationships {
                         .optional()
                 .forClass(User.class)
                     .rel(RelTypes.SELF, routes.get(Constants.Routes.USER_READ_ROUTE))
-                    .rel("userServices", routes.get(Constants.Routes.USER_SERVICES_ROUTE))
-                .forCollectionOf(UserService.class)
-                    .asRel("userServices")
-                    .rel(RelTypes.SELF, routes.get(Constants.Routes.USER_SERVICES_ROUTE))
-                    .rel(RelTypes.UP, routes.get(Constants.Routes.USER_READ_ROUTE))
-                .forClass(UserService.class)
-                    .rel(RelTypes.SELF, routes.get(Constants.Routes.USER_SERVICE_ROUTE))
-                    .rel("userAuthorizations", routes.get(Constants.Routes.USER_SERVICE_AUTHORIZATIONS_ROUTE))
+                    .rel("userAuthorizations", routes.get(Constants.Routes.USER_AUTHORIZATIONS_ROUTE))
+//                .forCollectionOf(UserService.class)
+//                    .asRel("userServices")
+//                    .rel(RelTypes.SELF, routes.get(Constants.Routes.USER_SERVICES_ROUTE))
+//                    .rel(RelTypes.UP, routes.get(Constants.Routes.USER_READ_ROUTE))
+//                .forClass(UserService.class)
+//                    .rel(RelTypes.SELF, routes.get(Constants.Routes.USER_SERVICE_ROUTE))
+//                    .rel("userAuthorizations", routes.get(Constants.Routes.USER_SERVICE_AUTHORIZATIONS_ROUTE))
                 .forCollectionOf(UserAuthorization.class)
-                    .asRel("userAuthorization")
-                    .rel(RelTypes.SELF, routes.get(Constants.Routes.USER_SERVICE_AUTHORIZATIONS_ROUTE))
-                    .rel(RelTypes.UP, routes.get(Constants.Routes.USER_SERVICE_ROUTE));
-        
+                    .asRel("userAuthorizations")
+                    .rel(RelTypes.SELF, routes.get(Constants.Routes.USER_AUTHORIZATIONS_ROUTE))
+                    .rel(RelTypes.UP, routes.get(Constants.Routes.USER_READ_ROUTE))
+                .forClass(UserAuthorization.class)
+                    .rel(RelTypes.SELF, routes.get(Constants.Routes.USER_AUTHORIZATION_ROUTE));
 
 //		.forClass(User.class)
 //			.rel(RelTypes.SELF, routes.get(Constants.Routes.SINGLE_USER))

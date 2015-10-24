@@ -30,6 +30,6 @@ import org.lambico.dao.generic.GenericDao;
 @Dao(entity = Authorization.class)
 public interface AuthorizationDao extends GenericDao<Authorization, Long> {
 
-    Authorization findByNameAndService(String authorizationName, String serviceName);
+    Authorization findByName(String authorizationName);
     
 }

@@ -20,10 +20,8 @@ package org.caratarse.auth.model.bo;
 import java.util.List;
 import javax.annotation.Resource;
 import org.caratarse.auth.model.dao.AuthorizationDao;
-import org.caratarse.auth.model.dao.ServiceDao;
 import org.caratarse.auth.model.dao.UserAuthorizationDao;
 import org.caratarse.auth.model.dao.UserDao;
-import org.caratarse.auth.model.dao.UserServiceDao;
 import org.caratarse.auth.model.po.Authorization;
 import org.caratarse.auth.model.po.Permissions;
 import org.caratarse.auth.model.po.User;
@@ -50,16 +48,12 @@ public class UserBo {
     @Resource
     private UserAuthorizationDao userAuthorizationDao;
     @Resource
-    private ServiceDao serviceDao;
-    @Resource
     private AuthorizationDao authorizationDao;
-    @Resource
-    private UserServiceDao userServiceDao;
     
     @Transactional
-    public List<UserAuthorization> retrieveUserDirectAuthorizations(String uuid, String serviceName) {
+    public List<UserAuthorization> retrieveUserDirectAuthorizations(String uuid) {
         ((HibernateGenericDao)userAuthorizationDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
-        List<UserAuthorization> result = userAuthorizationDao.findByUserUuidAndServiceName(uuid, serviceName);
+        List<UserAuthorization> result = userAuthorizationDao.findByUserUuid(uuid);
         ((HibernateGenericDao)userAuthorizationDao).setFilterNames();
         return result;
     }
@@ -95,33 +89,21 @@ public class UserBo {
         userDao.create(userLucio);
         final User userMichele = new User("michele", "michelePwd");
         userDao.create(userMichele);
-        final org.caratarse.auth.model.po.Service serviceTest
-                = new org.caratarse.auth.model.po.Service("TEST_SERVICE", "A service for tests");
-        serviceDao.create(serviceTest);
-        final org.caratarse.auth.model.po.Service serviceAnother
-                = new org.caratarse.auth.model.po.Service("ANOTHER_SERVICE", "Another service for tests");
-        serviceDao.create(serviceAnother);
-        final org.caratarse.auth.model.po.Service serviceUnused
-                = new org.caratarse.auth.model.po.Service("UNUSED_SERVICE", "A not used service for tests");
-        serviceDao.create(serviceUnused);
-        userLucio.addService(serviceTest);
-        userLucio.addService(serviceAnother);
-        userMichele.addService(serviceTest);
         Authorization authorizationAdmin
-                = new Authorization("ROLE_ADMIN", "Admin authorization", serviceTest);
+                = new Authorization("ROLE_ADMIN", "Admin authorization");
         authorizationDao.create(authorizationAdmin);
         userLucio.addAuthorization(authorizationAdmin, Permissions.RWX);
         Authorization authorizationUser
-                = new Authorization("ROLE_USER", "User authorization", serviceTest);
+                = new Authorization("ROLE_USER", "User authorization");
         authorizationDao.create(authorizationUser);
         userMichele.addAuthorization(authorizationUser, Permissions.RWX);
         Authorization authorizationPrinter
-                = new Authorization("ROLE_PRINTER", "Printer authorization", serviceTest);
+                = new Authorization("ROLE_PRINTER", "Printer authorization");
         authorizationDao.create(authorizationPrinter);
         userMichele.addAuthorization(authorizationPrinter, Permissions.R);
         userLucio.addAuthorization(authorizationPrinter, Permissions.RWX);
         Authorization authorizationNotUsed
-                = new Authorization("ROLE_NOT_USED", "Not used authorization", serviceTest);
+                = new Authorization("ROLE_NOT_USED", "Not used authorization");
         authorizationDao.create(authorizationNotUsed);
         return userDao.findAll();
     }
@@ -142,9 +124,7 @@ public class UserBo {
     @Transactional
     public void cleanAll() {
         userAuthorizationDao.deleteAll();
-        userServiceDao.deleteAll();
         authorizationDao.deleteAll();
-        serviceDao.deleteAll();
         userDao.deleteAll();
     }
     

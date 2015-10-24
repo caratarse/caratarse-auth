@@ -35,10 +35,10 @@ public class AuthorizationBo {
     private AuthorizationDao authorizationDao;
     
     @Transactional
-    public Authorization findAuthorization(String serviceName, String authorizationName) {
+    public Authorization findAuthorization(String authorizationName) {
         ((HibernateGenericDao)authorizationDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
         Authorization result
-                = authorizationDao.findByNameAndService(authorizationName, serviceName);
+                = authorizationDao.findByName(authorizationName);
         ((HibernateGenericDao)authorizationDao).setFilterNames();
         return result;
     }

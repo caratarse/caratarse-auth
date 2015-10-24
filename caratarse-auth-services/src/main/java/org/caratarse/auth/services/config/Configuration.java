@@ -22,8 +22,7 @@ import org.caratarse.auth.services.controller.PopulateController;
 
 import org.restexpress.RestExpress;
 import org.caratarse.auth.services.controller.UserController;
-import org.caratarse.auth.services.controller.UserServiceAuthorizationController;
-import org.caratarse.auth.services.controller.UserServiceController;
+import org.caratarse.auth.services.controller.UserAuthorizationController;
 import org.caratarse.auth.services.spring.ApplicationContextHolder;
 import org.restexpress.util.Environment;
 
@@ -46,8 +45,7 @@ public class Configuration
 
     private PopulateController populateController;
     private UserController userController;
-    private UserServiceController userServiceController;
-    private UserServiceAuthorizationController userServiceAuthorizationController;
+    private UserAuthorizationController userAuthorizationController;
 
     @Override
     protected void fillValues(Properties p) {
@@ -66,10 +64,8 @@ public class Configuration
         contextHolder.autowireBeanProperties(populateController);
         userController = new UserController();
         contextHolder.autowireBeanProperties(userController);
-        userServiceController = new UserServiceController();
-        contextHolder.autowireBeanProperties(userServiceController);
-        userServiceAuthorizationController = new UserServiceAuthorizationController();
-        contextHolder.autowireBeanProperties(userServiceAuthorizationController);
+        userAuthorizationController = new UserAuthorizationController();
+        contextHolder.autowireBeanProperties(userAuthorizationController);
     }
 
     private void initializeSpringContext(String environment) {
@@ -108,12 +104,8 @@ public class Configuration
         this.contextHolder = contextHolder;
     }
 
-    public UserServiceController getUserServiceController() {
-        return userServiceController;
-    }
-
-    public UserServiceAuthorizationController getUserServiceAuthorizationController() {
-        return userServiceAuthorizationController;
+    public UserAuthorizationController getUserAuthorizationController() {
+        return userAuthorizationController;
     }
     
 }

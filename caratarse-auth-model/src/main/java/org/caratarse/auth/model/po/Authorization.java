@@ -17,14 +17,12 @@
  */
 package org.caratarse.auth.model.po;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -38,26 +36,23 @@ import org.hibernate.annotations.Filters;
  */
 @Filters({@Filter(name = "limitByNotDeleted")})
 @NamedQueries({
-    @NamedQuery(name = "Authorization.findByNameAndService", 
-            query = "from Authorization a where a.name = ? and a.service.name = ?")
+    @NamedQuery(name = "Authorization.findByName", 
+            query = "from Authorization a where a.name = ?")
 })
 @Entity
 public class Authorization extends EntityBase {
 
     private String name;
     private String description;
-    @JsonBackReference
-    private Service service;
     @JsonIgnore
     private List<UserAuthorization> userAuthorizations;
 
     public Authorization() {
     }
 
-    public Authorization(String name, String description, Service service) {
+    public Authorization(String name, String description) {
         this.name = name;
         this.description = description;
-        this.service = service;
     }
 
     @Column(nullable = false)
@@ -76,16 +71,6 @@ public class Authorization extends EntityBase {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @ManyToOne(optional = false)
-    @JsonBackReference
-    public Service getService() {
-        return service;
-    }
-
-    public void setService(Service service) {
-        this.service = service;
     }
 
     @OneToMany(mappedBy = "authorization")

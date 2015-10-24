@@ -49,34 +49,29 @@ public class UserAuthorizationBo {
     private AuthorizationBo authorizationBo;
 
     @Transactional
-    public UserAuthorization findUserAuthorization(String userUuid, String serviceName,
-            String authorizationName) {
+    public UserAuthorization findUserAuthorization(String userUuid, String authorizationName) {
         ((HibernateGenericDao)userAuthorizationDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
         final UserAuthorization result
-                = userAuthorizationDao.findByUserUuidAndServiceNameAndAuthorizationName(userUuid,
-                        serviceName, authorizationName);
+                = userAuthorizationDao.findByUserUuidAndAuthorizationName(userUuid, authorizationName);
         ((HibernateGenericDao)userAuthorizationDao).setFilterNames();
         return result;
     }
 
     @Transactional
-    public UserAuthorization addAuthorizationToUserForService(String userUuid, String serviceName,
-            String authorizationName, Permissions permissions) {
+    public UserAuthorization addAuthorizationToUser(String userUuid, String authorizationName, Permissions permissions) {
         User user = userBo.getUser(userUuid);
         Authorization authorization
-                = authorizationBo.findAuthorization(serviceName, authorizationName);
+                = authorizationBo.findAuthorization(authorizationName);
         return user.addAuthorization(authorization, permissions);
     }
     
     @Transactional
-    public Page<UserAuthorization> readAllByUserAndService(String userUuid, String serviceName, QueryFilter filter, QueryRange range, QueryOrder order) {
+    public Page<UserAuthorization> readAllByUserAndService(String userUuid, QueryFilter filter, QueryRange range, QueryOrder order) {
         Page<UserAuthorization> result = null;
         DetachedCriteria crit = DetachedCriteria.forClass(UserAuthorization.class, "ua");
         crit.createAlias("ua.user", "user");
         crit.add(Restrictions.eq("user.uuid", userUuid));
         crit.createAlias("ua.authorization", "authorization");
-        crit.createAlias("authorization.service", "service");
-        crit.add(Restrictions.eq("service.name", serviceName));
         
         CriteriaFilterHelper.addQueryFilter(crit, filter);
         CriteriaFilterHelper.addQueryOrder(crit, order);
@@ -91,11 +86,10 @@ public class UserAuthorizationBo {
     }
 
     @Transactional
-    public void delete(String userUuid, String serviceName, String authorizationName) {
+    public void delete(String userUuid, String authorizationName) {
         ((HibernateGenericDao)userAuthorizationDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
         UserAuthorization userAuthorization
-                = userAuthorizationDao.findByUserUuidAndServiceNameAndAuthorizationName(userUuid,
-                        serviceName, authorizationName);
+                = userAuthorizationDao.findByUserUuidAndAuthorizationName(userUuid, authorizationName);
         userAuthorization.delete();
         ((HibernateGenericDao)userAuthorizationDao).setFilterNames(Constants.NOT_DELETED_FILTER_NAME);
     }
