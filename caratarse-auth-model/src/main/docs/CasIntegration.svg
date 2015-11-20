@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="335pt" style="width:277px;height:335px;" version="1.1" viewBox="0 0 277 335" width="277pt">
+    <defs>
+        <filter height="300%" id="f1" width="300%" x="-1" y="-1">
+            <feGaussianBlur result="blurOut" stdDeviation="2.0"/>
+            <feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/>
+            <feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/>
+            <feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/>
+        </filter>
+    </defs>
+    <g>
+        <polygon fill="#FFFFFF" filter="url(#f1)" points="14,26,24,16,272,16,272,85,262,95,14,95,14,26" style="stroke: #000000; stroke-width: 2.0;"/>
+        <line style="stroke: #000000; stroke-width: 2.0;" x1="262" x2="271" y1="26" y2="17"/>
+        <line style="stroke: #000000; stroke-width: 2.0;" x1="14" x2="262" y1="26" y2="26"/>
+        <line style="stroke: #000000; stroke-width: 2.0;" x1="262" x2="262" y1="26" y2="95"/>
+        <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="90" x="94" y="41.9951">CAS Server</text>
+        <rect fill="#FEFECE" filter="url(#f1)" height="39.2969" style="stroke: #A80036; stroke-width: 1.5;" width="242" x="22" y="48"/>
+        <polygon fill="#FEFECE" points="247,53,247,67,259,67,259,59,253,53,247,53" style="stroke: #A80036; stroke-width: 1.5;"/>
+        <line style="stroke: #A80036; stroke-width: 1.5;" x1="253" x2="253" y1="53" y2="59"/>
+        <line style="stroke: #A80036; stroke-width: 1.5;" x1="259" x2="253" y1="59" y2="59"/>
+        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="212" x="32" y="73.9951">Caratarse-auth CAS integration</text>
+        <polygon fill="#FEFECE" filter="url(#f1)" points="22.5,174,32.5,164,263.5,164,263.5,200.2969,253.5,210.2969,22.5,210.2969,22.5,174" style="stroke: #A80036; stroke-width: 1.5;"/>
+        <line style="stroke: #A80036; stroke-width: 1.5;" x1="253.5" x2="262.5" y1="174" y2="165"/>
+        <line style="stroke: #A80036; stroke-width: 1.5;" x1="22.5" x2="253.5" y1="174" y2="174"/>
+        <line style="stroke: #A80036; stroke-width: 1.5;" x1="253.5" x2="253.5" y1="174" y2="210.2969"/>
+        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="201" x="37.5" y="196.9951">Caratarse Auth CRUD Service</text>
+        <path d="M107,297 C107,287 143,287 143,287 C143,287 179,287 179,297 L179,318.2969 C179,328.2969 143,328.2969 143,328.2969 C143,328.2969 107,328.2969 107,318.2969 L107,297 " fill="#FEFECE" filter="url(#f1)" style="stroke: #A80036; stroke-width: 1.5;"/>
+        <path d="M107,297 C107,307 143,307 143,307 C143,307 179,307 179,297 " fill="none" style="stroke: #A80036; stroke-width: 1.5;"/>
+        <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="52" x="117" y="319.9951">RDBMS</text>
+        <path d="M143,87.118 C143,106.409 143,136.756 143,158.746 " fill="none" style="stroke: #A80036; stroke-width: 1.0;"/>
+        <polygon fill="#A80036" points="143,163.864,147,154.864,143,158.864,139,154.864,143,163.864" style="stroke: #A80036; stroke-width: 1.0;"/>
+        <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="56" x="144" y="130.0669">REST API</text>
+        <path d="M143,210.011 C143,230.3733 143,260.603 143,281.7854 " fill="none" style="stroke: #A80036; stroke-width: 1.0;"/>
+        <polygon fill="#A80036" points="143,286.9643,147,277.9643,143,281.9643,139,277.9643,143,286.9643" style="stroke: #A80036; stroke-width: 1.0;"/>
+        <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="20" x="144" y="253.0669">JPA</text>
+    </g>
+</svg>

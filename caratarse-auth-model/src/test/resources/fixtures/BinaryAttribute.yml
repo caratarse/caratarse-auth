@@ -1,0 +1,22 @@
+#
+# Copyright (C) 2015 Caratarse Auth Team <lucio.benfante@gmail.com>
+#
+# This file is part of Caratarse Auth Model.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+- &BinaryAttribute-picu1
+  name: "picture"
+  binaryValue: !!binary |-
+    iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAABB1JREFUaIG92luIlVUUB/DfjI4WmHhLVLQeYpyCXoygCxJdIIJSNKHIxwgkDaUiJKHooSDoJhIEUVEQSQQ+92RXTDOtyMrQeumOROqMl0zn9LDOyTNnzved/V2Of1hw4Nt7rf/al7XW3vsMqAcLcQuuxwiuwGxc0vw+ir/xIw5iNz7AHzXZL4V52IQv0Cgpe7ERcy8k8cXYhpMViHfKCWzFon4Sn4YtTWN1Ee+UMWzGUN3kR/B1H4l3yldYWhf5NWITXijyLRnF6qrk1+NcosGjeLfZZzmWYCamiCh1G57ApwV0nsO6suQfTDSyG/dieqLeGfgkUXdLCjuxRu9ROo0VBfXOwK6C5FszsSrVyIj0Nf92k1QqXitBviXHMdzLwDTFo803mJrowM4KDjTwpR4hdksJpeMiK6dgSCy7t8QSLOPEY1nKFyuXpJ5LJN+JK3Gsi76j2I5TGfbGRFSbhG0JZM/gI7yHl3FHSfItvN+mez/WOh/N1ufweLFT0Txptc36ioTbsURszNO4HwMd3wfEYHXjcUJHAbgpgXwD99VEfgB7mjrfzGm3TOyxblweam+YVxIfFsmqgadqcuBiEzfxT/hORJmHO9ruyOC1p9VgYQ7505jTbHd1U+rCIxk2z+LyZpsF+Daj3TjmExsny4F+nphm5djdIeqpwzltGqKE6Rl9UmN8UdzVw26KvDQoSodehurGRcrnj3aM0HuaPq7BUCde72EzVQ7BXwkNl9VIfkNN5Bs4QmTXXg3fqYn8dYn2UuWfLAfOiDuelfhVhLbLKpKfiu9rJP+/A92W0FlxFCTyxC48XtGBOqLOpCU0VdyYzTERU8Th4SB+FzF5dkUHllTs3w1HB8V1Xzcsb/s9LmaqCn6u2L8bDg2KUe6GO2s2tlP1QejED0SF2W19ncQ10o+LKVgj9ldde+AeomDKa/SviESf41XcUNGJW3GgBvLjuLSldG+BjufwNAYrOnIjnhSF2z5RUv8m/UZkd7uyjSVGYHsNTmThWrG+8+xvaO8wV7kD/bN9cgDuzrE7ZnLot7WEA+O4qU8OrM6x+3y3DouEZ0Wd2N8H8gvwS4a90eb3rthcwoEGbq+R/CwxKFm2Hs3rPCQeF4o68EZN5BeIg32WnX0S8tJSxR80DtRA/maRb7JsHBOvn0lYLf0RoiFieFnMwyuy738aInuvLKp4XQEHPnS+/E7FMF4Qt3O99D9QlHy7E6kz8ae4/1+Lq0x8sZkupn8FnhFrOUXn2SrkW1glbZS6ySlxairT95gSyyYLw/KjQ92yT4ENm4oh8bhQJtmlyqiI83WW8JOwUNzP1/liPybKg8wM2w/MFVfce+SHwCwZFyXxBl0Ks1R0PiqUxXwT/24zLEqCmc3vx8XT0SFRJn8m/m5zpKrh/wDSWhEM8n+C7gAAAABJRU5ErkJggg==

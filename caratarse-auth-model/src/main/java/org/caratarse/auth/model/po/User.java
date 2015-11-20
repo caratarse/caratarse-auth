@@ -17,17 +17,20 @@
  */
 package org.caratarse.auth.model.po;
 
+import org.caratarse.auth.model.po.attribute.Attribute;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.strategicgains.syntaxe.annotation.StringValidation;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -61,6 +64,7 @@ public class User extends EntityBase implements UuidIdentified {
     private Date disabled;
     @JsonManagedReference(value = "user-authorization")
     private List<UserAuthorization> userAuthorizations;
+    private Map<String, Attribute> userAttributes;
 
     public User() {
         this.uuid = UUID.randomUUID().toString();
@@ -163,6 +167,17 @@ public class User extends EntityBase implements UuidIdentified {
         this.userAuthorizations = userAuthorizations;
     }
 
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @MapKey(name = "name")
+    @Filters({@Filter(name = "limitByNotDeleted")})
+    public Map<String, Attribute> getUserAttributes() {
+        return userAttributes;
+    }
+
+    public void setUserAttributes(Map<String, Attribute> userAttributes) {
+        this.userAttributes = userAttributes;
+    }
+    
     @Override
     protected void doRecursiveDelete() {
         super.doRecursiveDelete();
@@ -170,6 +185,12 @@ public class User extends EntityBase implements UuidIdentified {
         if (userAuthorizations != null && !userAuthorizations.isEmpty()) {
             for (UserAuthorization userAuthorization : userAuthorizations) {
                 userAuthorization.delete();
+            }
+        }
+        Map<String, Attribute> userAttributes = getUserAttributes();
+        if (userAttributes != null && !userAttributes.isEmpty()) {
+            for (Attribute userAttribute : userAttributes.values()) {
+                userAttribute.delete();
             }
         }
     }

@@ -22,6 +22,14 @@ import org.caratarse.auth.model.po.Resource;
 import org.caratarse.auth.model.po.ResourceHierarchyLink;
 import org.caratarse.auth.model.po.User;
 import org.caratarse.auth.model.po.UserAuthorization;
+import org.caratarse.auth.model.po.attribute.BinaryAttribute;
+import org.caratarse.auth.model.po.attribute.BooleanAttribute;
+import org.caratarse.auth.model.po.attribute.DateAttribute;
+import org.caratarse.auth.model.po.attribute.DateTimeAttribute;
+import org.caratarse.auth.model.po.attribute.IntAttribute;
+import org.caratarse.auth.model.po.attribute.LongAttribute;
+import org.caratarse.auth.model.po.attribute.LongStringAttribute;
+import org.caratarse.auth.model.po.attribute.StringAttribute;
 import org.lambico.test.spring.hibernate.junit4.AbstractBaseTest;
 import org.lambico.test.spring.hibernate.junit4.FixtureSet;
 
@@ -30,7 +38,10 @@ import org.lambico.test.spring.hibernate.junit4.FixtureSet;
  *
  * @author Lucio Benfante
  */
-@FixtureSet(modelClasses = {User.class, Resource.class, ResourceHierarchyLink.class,
+@FixtureSet(modelClasses = {StringAttribute.class, LongStringAttribute.class, IntAttribute.class,
+    LongAttribute.class, BinaryAttribute.class, DateAttribute.class, DateTimeAttribute.class,
+    BooleanAttribute.class,
+    User.class, Resource.class, ResourceHierarchyLink.class,
     Authorization.class, UserAuthorization.class})
 public abstract class BaseTest extends AbstractBaseTest {
 }

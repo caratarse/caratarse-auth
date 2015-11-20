@@ -145,5 +145,5 @@ public class UserDaoTest extends BaseTest {
         assertSize(oldSize + 1, user.getUserAuthorizations());
         assertTrue(user.hasAuthorization(authorization));
     }
-    
+
 }
