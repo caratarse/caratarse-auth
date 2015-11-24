@@ -144,16 +144,19 @@
                         <exclude>m2-target/**</exclude>
                         <exclude>**/*.properties</exclude>
                         <exclude>LICENSE_HEADER</exclude>
+                        <exclude>LICENSE</exclude>
                         <exclude>nb-configuration.xml</exclude>
                         <exclude>nbactions.xml</exclude>
                         <exclude>profiles.xml</exclude>
                         <exclude>catalog.xml</exclude>
                         <exclude>.travis.yml</exclude>
                         <exclude>.git</exclude>
+                        <exclude>.gitignore</exclude>
                         <exclude>README.md</exclude>
                         <exclude>.idea/**</exclude>
                         <exclude>**/*.iml</exclude>
                         <exclude>**/*.svg</exclude>
+                        <exclude>**/*.puml</exclude>
                         <exclude>src/main/webapp/assets/js/vendor/**</exclude>
                         <exclude>src/main/webapp/assets/css/vendor/**</exclude>
                     </excludes>
